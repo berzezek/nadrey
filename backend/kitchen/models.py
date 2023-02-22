@@ -30,28 +30,20 @@ class Product(models.Model):
     name = models.CharField(max_length=255, verbose_name='Наименование')
     description = models.TextField(null=True, blank=True, verbose_name='Описание')
     unit = models.CharField(max_length=10, choices=UNIT_CHOICES, default='kg', verbose_name='Единица измерения')
+    weight = models.FloatField(verbose_name='Вес', default=1)
     calories = models.IntegerField(null=True, blank=True, verbose_name='Калорийность ккал')
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, null=True, blank=True,
                                  verbose_name='Категория')
 
+    def set_weight(self):
+        if self.unit == 'kg':
+            return 1
+        elif self.unit == 'gr':
+            return 0.001
+        else: return self.weight
+
     def __str__(self):
         return f'{self.name} ({self.unit})'
-
-
-class ProductInStore(models.Model):
-    class Meta:
-        verbose_name = 'Продукт на складе'
-        verbose_name_plural = 'Продукты на складе'
-
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
-    description = models.TextField(null=True, blank=True, verbose_name='Описание')
-    date = models.DateField(auto_now_add=True)
-    expiration_date = models.DateField(null=True, blank=True, verbose_name='Срок годности')
-    quantity = models.FloatField(verbose_name='Количество')
-    price = models.FloatField(verbose_name='Закупочная цена')
-
-    def __str__(self):
-        return f'{self.product.name} - {self.quantity}/{self.product.unit}'
 
 
 class Store(models.Model):
@@ -66,28 +58,30 @@ class Store(models.Model):
         return self.name
 
 
-class StoreTransaction(models.Model):
+class ProductInStore(models.Model):
     TRANSACTION_TYPE = (
         ('in', 'Приход'),
         ('out', 'Расход'),
         ('trash', 'Списание')
     )
-
     class Meta:
-        verbose_name = 'Транзакцию'
-        verbose_name_plural = 'Транзакции'
+        verbose_name = 'Продукт на складе'
+        verbose_name_plural = 'Продукты на складе'
 
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
+    description = models.TextField(null=True, blank=True, verbose_name='Описание')
     date = models.DateField(auto_now_add=True)
-    store = models.ForeignKey(Store, on_delete=models.CASCADE, verbose_name='Склад')
-    product = models.ForeignKey(ProductInStore, on_delete=models.CASCADE, verbose_name='Продукт')
+    expiration_date = models.DateField(null=True, blank=True, verbose_name='Срок годности')
     quantity = models.FloatField(verbose_name='Количество')
-    transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPE)
+    transaction_type = models.CharField(max_length=255, choices=TRANSACTION_TYPE, verbose_name='Тип транзакции')
+    price = models.FloatField(verbose_name='Закупочная цена', null=True, blank=True)
+    store = models.ForeignKey(Store, on_delete=models.CASCADE, verbose_name='Склад', default=1)
 
     def __str__(self):
-        return f'{self.store.name} - {self.product.name} - {self.quantity}/{self.product.unit}'
+        return f'{self.product.name} - {self.quantity}/{self.product.unit}'
 
 
-class ProductForRecipe(models.Model):
+class Ingredients(models.Model):
     class Meta:
         verbose_name = 'Продукт для рецепта'
         verbose_name_plural = 'Продукты для рецепта'
@@ -113,12 +107,14 @@ class Recipe(models.Model):
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
-    name = models.CharField(max_length=255, verbose_name='Наименование')
+    name = models.CharField(max_length=255, verbose_name='Наименование', unique=True)
     description = models.TextField(null=True, blank=True, verbose_name='Описание')
     image = models.ImageField(upload_to='images', default='images/default.png', verbose_name='Изображение')
-    products = models.ManyToManyField(ProductForRecipe, verbose_name='Продукты для рецепта')
+    products = models.ManyToManyField(Ingredients, verbose_name='Продукты для рецепта')
     category = models.ForeignKey(CategoryRecipe, on_delete=models.CASCADE, null=True, blank=True,
                                  verbose_name='Категория')
+    weight = models.FloatField(null=True, blank=True, verbose_name='Вес', default=0)
+    price = models.FloatField(null=True, blank=True, verbose_name='Цена', default=0)
 
     def __str__(self):
         return self.name
@@ -140,7 +136,7 @@ class Client(models.Model):
 class Order(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, verbose_name='Рецепт')
     description = models.TextField(null=True, blank=True, verbose_name='Описание')
-    quantity = models.IntegerField(verbose_name='Количество')
+    quantity = models.FloatField(verbose_name='Количество')
     date = models.DateField(auto_now_add=True)
     date_completed = models.DateField(null=True, blank=True, verbose_name='Дата выполнения')
     is_completed = models.BooleanField(default=False, verbose_name='Выполнен')

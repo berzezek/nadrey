@@ -1,33 +1,35 @@
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.parsers import JSONParser
-from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework.viewsets import ModelViewSet
+from django.db.models import Case, When, Sum, F, FloatField
 
-from ..models import (
-    ProductCategory,
-    Product,
-    ProductInStore,
-    ProductForRecipe,
-    CategoryRecipe,
-    Recipe,
-    Client,
-    Order,
-    Card,
-)
+# from rest_framework.response import Response
+# from .services.product_service import ProductServiceSerializer
 
 from .serializers import (
     ProductCategorySerializer,
     ProductSerializer,
+    StoreSerializer,
     ProductInStoreSerializer,
-    ProductForRecipeSerializer,
+    IngredientsSerializer,
     CategoryRecipeSerializer,
     RecipeSerializer,
     ClientSerializer,
     OrderSerializer,
     CardSerializer,
 )
-from rest_framework.viewsets import ModelViewSet
+from ..models import (
+    ProductCategory,
+    Product,
+    Store,
+    ProductInStore,
+    Ingredients,
+    CategoryRecipe,
+    Recipe,
+    Client,
+    Order,
+    Card,
+)
 
 
 class ProductCategoryViewSet(ModelViewSet):
@@ -40,14 +42,19 @@ class ProductViewSet(ModelViewSet):
     serializer_class = ProductSerializer
 
 
+class StoreViewSet(ModelViewSet):
+    queryset = Store.objects.all()
+    serializer_class = StoreSerializer
+
+
 class ProductInStoreViewSet(ModelViewSet):
     queryset = ProductInStore.objects.all()
     serializer_class = ProductInStoreSerializer
 
 
-class ProductForRecipeViewSet(ModelViewSet):
-    queryset = ProductForRecipe.objects.all()
-    serializer_class = ProductForRecipeSerializer
+class IngredientsViewSet(ModelViewSet):
+    queryset = Ingredients.objects.all()
+    serializer_class = IngredientsSerializer
 
 
 class CategoryRecipeViewSet(ModelViewSet):
@@ -75,14 +82,24 @@ class CardViewSet(ModelViewSet):
     serializer_class = CardSerializer
 
 
+# class GroupedProductInStoreViewSet(ModelViewSet):
+#     serializer_class = ProductServiceSerializer
+#     queryset = ProductInStore.objects.all()
+#
+#     def list(self, request, *args, **kwargs):
+#         queryset = self.get_queryset()
+#         serializer = self.get_serializer(queryset, many=True)
+#         return Response(serializer.data)
+
+
 schema_view = get_schema_view(
-   openapi.Info(
-      title="nadrey API",
-      default_version='v1',
-      description="Test description",
-      terms_of_service="http://localhost/api/v1/",
-      contact=openapi.Contact(email="wknduz@gmail.com"),
-      license=openapi.License(name="BSD License"),
-   ),
-   public=True,
+    openapi.Info(
+        title="nadrey API",
+        default_version='v1',
+        description="Test description",
+        terms_of_service="http://localhost/api/v1/",
+        contact=openapi.Contact(email="wknduz@gmail.com"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
 )

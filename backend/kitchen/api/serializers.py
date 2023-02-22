@@ -1,19 +1,17 @@
-from django.db.models import F
-
+from rest_framework.serializers import ModelSerializer, SerializerMethodField, CharField
 
 from ..models import (
     ProductCategory,
     Product,
+    Store,
     ProductInStore,
-    ProductForRecipe,
+    Ingredients,
     CategoryRecipe,
     Recipe,
     Client,
     Order,
     Card,
 )
-
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 
 class ProductCategorySerializer(ModelSerializer):
@@ -28,24 +26,54 @@ class ProductSerializer(ModelSerializer):
         fields = '__all__'
 
 
+class StoreSerializer(ModelSerializer):
+    class Meta:
+        model = Store
+        fields = '__all__'
+
+
 class ProductInStoreSerializer(ModelSerializer):
+    product_name = CharField(source='product.name', read_only=True)
+    # def get_quantity_for_product_in_store(self, obj):
+    #     quantity = 0
+    #     for product in ProductInStore.objects.filter(product=obj.product):
+    #         if product.transaction_type == 'in':
+    #             quantity += product.quantity
+    #         else:
+    #             quantity -= product.quantity
+    #     return quantity
+    #
+    # get_quantity = SerializerMethodField(
+    #     method_name='get_quantity_for_product_in_store',
+    #     read_only=True,
+    # )
 
     class Meta:
         model = ProductInStore
         fields = (
             'id',
             'product',
+            'product_name',
+            'transaction_type',
             'quantity',
+            # 'get_quantity',
             'price',
             'expiration_date',
             'description',
+            'store',
         )
+        ordering = ['product']
 
 
-class ProductForRecipeSerializer(ModelSerializer):
+class IngredientsSerializer(ModelSerializer):
     class Meta:
-        model = ProductForRecipe
-        fields = '__all__'
+        model = Ingredients
+        fields = (
+            'id',
+            'product',
+            'quantity',
+            'description',
+        )
 
 
 class CategoryRecipeSerializer(ModelSerializer):
@@ -59,11 +87,10 @@ class RecipeSerializer(ModelSerializer):
     def get_total_price(self, obj):
         total = 0
         for product in obj.products.all():
-            print(product.__dict__)
             try:
-                price = ProductInStore.objects.get(product=product.product_id).price
+                price = ProductInStore.objects.filter(product=product.product_id).last().price * product.quantity
                 total += price
-            except ProductInStore.DoesNotExist:
+            except AttributeError:
                 return f'Нет актуальных цен на продукты: {product.product}'
 
         return total
@@ -77,6 +104,15 @@ class RecipeSerializer(ModelSerializer):
                 return f'Неизвестны калории: {product.product}'
         return total
 
+    def get_total_product_weight(self, obj):
+        total = 0
+        for product in obj.products.all():
+            try:
+                total += product.quantity
+            except AttributeError:
+                return f'Неизвестный вес: {product.product}'
+        return total
+
     total_calories = SerializerMethodField(
         method_name='get_total_calories',
         read_only=True,
@@ -87,6 +123,11 @@ class RecipeSerializer(ModelSerializer):
         read_only=True,
     )
 
+    product_weight = SerializerMethodField(
+        method_name='get_total_product_weight',
+        read_only=True,
+    )
+
     class Meta:
         model = Recipe
         fields = (
@@ -94,10 +135,13 @@ class RecipeSerializer(ModelSerializer):
             'name',
             'description',
             'image',
+            'price',
             'products',
             'category',
             'total_calories',
             'total_price',
+            'weight',
+            'product_weight',
         )
 
 
@@ -111,12 +155,13 @@ class OrderSerializer(ModelSerializer):
 
     def get_order_price(self, obj):
         total = 0
-        for order in obj.recipe.products.all():
+        for product in obj.recipe.products.all():
             try:
-                price = ProductInStore.objects.get(product=order.product_id).price
-                total += price * obj.quantity
+                price = ProductInStore.objects.filter(product=product.product_id, price__isnull=False).last().price
+                ingradient_quantity = Ingredients.objects.get(product=product.product_id).quantity
+                total += price * ingradient_quantity * obj.quantity
             except ProductInStore.DoesNotExist:
-                return f'Нет актуальных цен на продукты: {order.product}'
+                return f'Нет актуальных цен на продукты: {product.product}'
         return total
 
     order_price = SerializerMethodField(
@@ -127,9 +172,10 @@ class OrderSerializer(ModelSerializer):
     def create(self, validated_data):
         order = Order.objects.create(**validated_data)
         for product in order.recipe.products.all():
-            product_in_store = ProductInStore.objects.get(product=product.product_id)
-            print(product_in_store.quantity)
-            # product_in_store.save()
+            ingradient_quantity = Ingredients.objects.get(product=product.product_id).quantity
+            product_out_store = ProductInStore(product=product.product, transaction_type='out',
+                                               quantity=ingradient_quantity)
+            product_out_store.save()
         return order
 
     class Meta:
@@ -150,11 +196,12 @@ class CardSerializer(ModelSerializer):
 
     def get_card_price(self, obj):
         total = 0
-        for card in obj.order.all():
-            for product in Recipe.objects.get(id=card.recipe_id).products.all():
+        for order in obj.order.all():
+            for product in order.recipe.products.all():
                 try:
-                    price = ProductInStore.objects.get(product=product.product_id).price
-                    total += price * card.quantity
+                    price = ProductInStore.objects.filter(product=product.product_id, price__isnull=False).last().price
+                    ingradient_quantity = Ingredients.objects.get(product=product.product_id).quantity
+                    total += price * ingradient_quantity * order.quantity
                 except ProductInStore.DoesNotExist:
                     return f'Нет актуальных цен на продукты: {product.product}'
         return total

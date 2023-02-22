@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import ProductCategory, Product, ProductInStore, ProductForRecipe, CategoryRecipe, Recipe
+from .models import ProductCategory, Product, ProductInStore, Ingredients, CategoryRecipe, Recipe
 
 
 class ProductCategoryAdmin(admin.ModelAdmin):
@@ -23,7 +23,7 @@ class ProductInStoreAdmin(admin.ModelAdmin):
     search_fields = ('product',)
 
 
-class ProductForRecipeAdmin(admin.ModelAdmin):
+class IngredientsAdmin(admin.ModelAdmin):
     list_display = ('product', 'description', 'quantity')
     search_fields = ('product',)
 
@@ -42,6 +42,6 @@ class RecipeAdmin(admin.ModelAdmin):
 admin.site.register(ProductCategory, ProductCategoryAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductInStore, ProductInStoreAdmin)
-admin.site.register(ProductForRecipe, ProductForRecipeAdmin)
+admin.site.register(Ingredients, IngredientsAdmin)
 admin.site.register(CategoryRecipe, CategoryRecipeAdmin)
 admin.site.register(Recipe, RecipeAdmin)
