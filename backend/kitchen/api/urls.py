@@ -1,4 +1,6 @@
-from django.urls import path
+from django.urls import path, re_path
+from django.views.generic import TemplateView
+from rest_framework.routers import DefaultRouter
 
 from .views import (
     ProductCategoryViewSet,
@@ -9,9 +11,9 @@ from .views import (
     RecipeViewSet,
     ClientViewSet,
     OrderViewSet,
-    CardViewSet
+    CardViewSet,
+    schema_view,
 )
-from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register('product-category', ProductCategoryViewSet)
@@ -25,6 +27,9 @@ router.register('order', OrderViewSet)
 router.register('card', CardViewSet)
 
 urlpatterns = [
+    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
 
 urlpatterns += router.urls

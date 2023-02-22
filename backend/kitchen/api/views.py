@@ -1,6 +1,8 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 
 from ..models import (
     ProductCategory,
@@ -71,3 +73,16 @@ class OrderViewSet(ModelViewSet):
 class CardViewSet(ModelViewSet):
     queryset = Card.objects.all()
     serializer_class = CardSerializer
+
+
+schema_view = get_schema_view(
+   openapi.Info(
+      title="nadrey API",
+      default_version='v1',
+      description="Test description",
+      terms_of_service="http://localhost/api/v1/",
+      contact=openapi.Contact(email="wknduz@gmail.com"),
+      license=openapi.License(name="BSD License"),
+   ),
+   public=True,
+)

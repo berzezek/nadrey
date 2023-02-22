@@ -1,5 +1,6 @@
 from django.db.models import F
 
+
 from ..models import (
     ProductCategory,
     Product,
@@ -28,11 +29,17 @@ class ProductSerializer(ModelSerializer):
 
 
 class ProductInStoreSerializer(ModelSerializer):
-    product = ProductSerializer(read_only=True)
 
     class Meta:
         model = ProductInStore
-        fields = '__all__'
+        fields = (
+            'id',
+            'product',
+            'quantity',
+            'price',
+            'expiration_date',
+            'description',
+        )
 
 
 class ProductForRecipeSerializer(ModelSerializer):
@@ -121,9 +128,8 @@ class OrderSerializer(ModelSerializer):
         order = Order.objects.create(**validated_data)
         for product in order.recipe.products.all():
             product_in_store = ProductInStore.objects.get(product=product.product_id)
-            product_in_store.quantity = F('quantity') - order.quantity * order.recipe.products.get(
-                product=product.product_id).quantity
-            product_in_store.save()
+            print(product_in_store.quantity)
+            # product_in_store.save()
         return order
 
     class Meta:

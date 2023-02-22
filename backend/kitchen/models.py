@@ -54,6 +54,39 @@ class ProductInStore(models.Model):
         return f'{self.product.name} - {self.quantity}/{self.product.unit}'
 
 
+class Store(models.Model):
+    class Meta:
+        verbose_name = 'Склад'
+        verbose_name_plural = 'Склады'
+
+    name = models.CharField(max_length=255, verbose_name='Наименование')
+    description = models.TextField(null=True, blank=True, verbose_name='Описание')
+
+    def __str__(self):
+        return self.name
+
+
+class StoreTransaction(models.Model):
+    TRANSACTION_TYPE = (
+        ('in', 'Приход'),
+        ('out', 'Расход'),
+        ('trash', 'Списание')
+    )
+
+    class Meta:
+        verbose_name = 'Транзакцию'
+        verbose_name_plural = 'Транзакции'
+
+    date = models.DateField(auto_now_add=True)
+    store = models.ForeignKey(Store, on_delete=models.CASCADE, verbose_name='Склад')
+    product = models.ForeignKey(ProductInStore, on_delete=models.CASCADE, verbose_name='Продукт')
+    quantity = models.FloatField(verbose_name='Количество')
+    transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPE)
+
+    def __str__(self):
+        return f'{self.store.name} - {self.product.name} - {self.quantity}/{self.product.unit}'
+
+
 class ProductForRecipe(models.Model):
     class Meta:
         verbose_name = 'Продукт для рецепта'
@@ -62,7 +95,6 @@ class ProductForRecipe(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
     description = models.TextField(null=True, blank=True, verbose_name='Описание')
     quantity = models.FloatField(verbose_name='Количество')
-
 
     def __str__(self):
         return f'{self.product.name} - {self.quantity}/{self.product.unit}'
