@@ -1,15 +1,16 @@
 <template>
-  <nav-main-header/>
-  <nav-main-sidebar/>
-  <div class="sm:ml-64">
-    <slot />
+  <flowbite-block-header/>
+<!--  <flowbite-block-aside/>-->
+  <div class="p-5">
+
+    <slot/>
   </div>
-  <nav-main-footer/>
+  <flowbite-block-footer/>
 </template>
 
 <script>
 export default {
-  name: "default"
+  name: "index"
 }
 </script>
 
