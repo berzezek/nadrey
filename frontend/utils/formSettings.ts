@@ -1,3 +1,5 @@
+import {IProductCategory} from "~/types";
+
 export const productAddFormSettings = {
   formAction: 'addProduct',
   buttonText: 'Добавить',

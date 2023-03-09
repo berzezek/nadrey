@@ -7,13 +7,15 @@
         :searchSelect="productCategories"
         @filterRadio="filterRadio"
         @searchItems="searchItems"
+        @modalFormDetail="modalFormDetail"
+        @changePage="changePage"
     />
 
     <div class="flex items-center">
       <flowbite-block-modal
           v-if="showModal"
           :formSettings="productAddFormSettings"
-          :fetchingData="productCategories"
+          :fetchingData="product"
           @closeModal="closeModal"
           @addModalForm="addModalForm"
           @emitFormData="emitFormData"
@@ -21,6 +23,7 @@
       <flowbite-block-alert
           v-if="showAlert"
           @closeAlert="closeAlert"
+          :alert-settings="alertSettings"
       />
       <button type="button"
               v-if="!showModal"
@@ -35,11 +38,10 @@
 
 <script setup>
 import {productAddFormSettings} from "~/utils/formSettings";
-import {productTableSettings} from "~/utils/tableSettings";
+import {productAlertSettings, productTableSettings} from "~/utils/productTable";
 
 import {useProductStore} from "~/store/productStore";
 import {useProductCategoryStore} from "~/store/productCategoryStore";
-import { productTableColumnsNames } from "~/utils/productTable";
 
 const productStore = useProductStore();
 const productCategoryStore = useProductCategoryStore();
@@ -58,10 +60,52 @@ const searchItems = (search) => {
 
 const showModal = ref(false);
 const showAlert = ref(false);
-const productDetail = ref({});
 
 const formSettings = ref(productAddFormSettings);
+const product = ref({});
+
 const addModalForm = () => {
+  product.value = {};
+  const categorySelectField = {
+    title: 'Категория',
+    type: 'text',
+    name: 'category',
+    required: true,
+    method: 'select',
+    selectValue: productCategories.value,
+  }
+  if (formSettings.value.formFields.length === 5) {
+    formSettings.value.formFields.push(categorySelectField)
+  }
+  showModal.value = true;
+
+}
+const closeModal = () => {
+  showModal.value = false;
+
+}
+
+const alertSettings = ref({});
+const emitFormData = (data, action) => {
+  if (action === 'addProduct') {
+    productStore.addProduct(data);
+    alertSettings.value = productAlertSettings;
+    showAlert.value = true;
+    setTimeout(() => {
+      showAlert.value = false;
+    }, 3000)
+  }
+
+}
+const closeAlert = () => {
+  showAlert.value = false;
+
+}
+const modalFormDetail = (id) => {
+  product.value = products.value.find(product => product.id === id);
+  formSettings.value.modalTitle = `Редактировать продукт - ${product.value.name}`;
+  formSettings.value.deleteMode = true;
+  formSettings.value.buttonText = `Редактировать`;
   const categorySelectField = {
     title: 'Категория',
     type: 'text',
@@ -76,24 +120,8 @@ const addModalForm = () => {
   showModal.value = true;
 }
 
-const closeModal = () => {
-  showModal.value = false;
-}
-
-const emitFormData = (data, action) => {
-  if (action === 'addProduct') {
-    productStore.addProduct(data);
-    showAlert.value = true;
-    setTimeout(() => {
-      showAlert.value = false;
-    }, 3000)
-  }
-}
-
-
-
-const closeAlert = () => {
-  showAlert.value = false;
+const changePage = (page) => {
+  console.log(page)
 }
 
 </script>

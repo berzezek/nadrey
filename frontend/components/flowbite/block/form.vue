@@ -28,12 +28,11 @@
             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
       {{ formSettings.buttonText }}
     </button>
-<!--    <button type="button"-->
-<!--            v-if="formSettings.addButton.required"-->
-<!--            @click="changeFormProps(formSettings.addButton.method)"-->
-<!--            class="ml-3 text-white bg-yellow-700 hover:bg-yellow-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800">-->
-<!--      {{ formSettings.addButton.title }}-->
-<!--    </button>-->
+    <button
+        v-if="formSettings.deleteMode"
+        class="md:mt-3 text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+      Удалить
+    </button>
   </form>
 </template>
 
@@ -50,14 +49,13 @@ const props = defineProps({
   editFormData: {
     type: Object,
     required: false,
-    default: () => ({}),
+    default: () => {},
   },
 })
 
 const emit = defineEmits(['emitFormData'])
 
-// const formData = ref(props.fetchingData)
-const formData = ref({})
+const formData = ref(props.fetchingData)
 
 if (props.editFormData) {
   formData.value = props.editFormData
@@ -67,9 +65,6 @@ const emitFormData = () => {
   emit('emitFormData', formData.value, props.formSettings.formAction)
 }
 
-// const changeFormProps = (method) => {
-//   emit('changeFormProps', method)
-// }
 
 </script>
 

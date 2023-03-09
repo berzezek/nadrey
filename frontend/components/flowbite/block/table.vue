@@ -31,7 +31,9 @@
                        @input="filterRadio(select.id)"
                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                 <label for="filter-radio-example-1"
-                       class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{{ select.name }}</label>
+                       class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{{
+                    select.name
+                  }}</label>
               </div>
             </li>
           </ul>
@@ -49,14 +51,15 @@
           </svg>
         </div>
         <input type="text" id="table-search"
-                @input="searchItems"
+               @input="searchItems"
                class="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                placeholder="Поиск содержимого ...">
       </div>
     </div>
+
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
       <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-      <tr >
+      <tr>
         <th class="px-6 py-3 text-center">#</th>
         <th scope="col" class="px-6 py-3" v-for="colName in columnNames" :key="colName">
           {{ Object.values(colName)[0] }}
@@ -75,6 +78,14 @@
       </tr>
       </tbody>
     </table>
+    <div class="flex items-center my-5" v-if="pageCountArray.length > 1">
+      <div class="mx-auto">
+        <flowbite-block-pagination
+            :pages="pageCountArray"
+            @changePage="changePage"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -83,21 +94,26 @@ const props = defineProps({
   columnNames: {
     type: Array,
     required: false,
-    default: () => ['id', 'name'],
+    default: () => [],
   },
   columnValues: {
     type: Array,
     required: false,
-    default: () => [{id: 1, name: 'foo'}],
+    default: () => [],
   },
   searchSelect: {
     type: Array,
     required: false,
-    default: () => [{category: 'Категория'}]
+    default: () => []
   },
 })
 
-const emit = defineEmits(['modalFormDetail', 'filterRadio', 'searchItems'])
+const emit = defineEmits([
+  'modalFormDetail',
+  'filterRadio',
+  'searchItems',
+  'changePage'
+])
 const modalFormDetail = (id) => {
   emit('modalFormDetail', id)
 }
@@ -109,6 +125,24 @@ const filterRadio = (categoryId) => {
 const searchItems = (e) => {
   emit('searchItems', e.target.value)
 }
+
+const changePage = (page) => {
+  emit('changePage', page)
+}
+
+const pageCountArray = computed(() => {
+  try {
+    const pageCount = Math.ceil(props.columnValues.length / 2)
+    const array = []
+    for (let i = 1; i <= pageCount; i++) {
+      array.push(i)
+    }
+    return array
+  } catch (e) {
+    return []
+  }
+})
+
 
 </script>
 

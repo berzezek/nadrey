@@ -68,9 +68,11 @@ const props = defineProps({
   },
   formSettings: propsFormSettings,
   fetchingData: {
-    type: Boolean,
+    type: Object,
     required: false,
-    default: () => {}
+    default: () => {
+      return {}
+    }
   }
 })
 

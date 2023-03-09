@@ -33,7 +33,6 @@ export const useProductStore = defineStore('products', {
         this.products = await response.json();
         return this.products
       } catch (error) {
-        console.log(error)
         this.error = error
       } finally {
         this.isFetching = false
