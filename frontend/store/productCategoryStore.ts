@@ -1,10 +1,11 @@
 import {defineStore} from 'pinia'
 import {BASE_API_URL} from '~/utils/constants'
 import {IProductCategory} from "~/types";
+
 export const useProductCategoryStore = defineStore('product-category', {
   state: () => ({
     productCategories: [] as IProductCategory[],
-    error:  null as any,
+    error: null as any,
     isFetching: false,
   }),
   getters: {
@@ -18,6 +19,7 @@ export const useProductCategoryStore = defineStore('product-category', {
       try {
         const response = await fetch(`${BASE_API_URL}product-category/`)
         this.productCategories = await response.json()
+        return this.productCategories
       } catch (error) {
         this.error = error
       } finally {

@@ -31,7 +31,7 @@ class Product(models.Model):
     description = models.TextField(null=True, blank=True, verbose_name='Описание')
     unit = models.CharField(max_length=10, choices=UNIT_CHOICES, default='kg', verbose_name='Единица измерения')
     weight = models.FloatField(verbose_name='Вес', default=1)
-    calories = models.IntegerField(null=True, blank=True, verbose_name='Калорийность ккал')
+    calories = models.IntegerField(null=True, blank=True, verbose_name='Калорийность ккал', default=0)
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, null=True, blank=True,
                                  verbose_name='Категория')
 

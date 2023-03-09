@@ -1,8 +1,7 @@
 <template>
   <flowbite-block-header/>
 <!--  <flowbite-block-aside/>-->
-  <div class="p-5">
-
+  <div class="lg:p-12 md:p-2">
     <slot/>
   </div>
   <flowbite-block-footer/>
