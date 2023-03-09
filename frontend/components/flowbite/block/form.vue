@@ -49,11 +49,20 @@ const props = defineProps({
       formFields: []
     }),
   },
+  editFormData: {
+    type: Object,
+    required: false,
+    default: () => ({}),
+  },
 })
 
 const emit = defineEmits(['emitFormData', 'changeFormProps'])
 
 const formData = ref({})
+
+if (props.editFormData) {
+  formData.value = props.editFormData
+}
 
 const emitFormData = () => {
   emit('emitFormData', formData.value, props.formSettings.formAction)

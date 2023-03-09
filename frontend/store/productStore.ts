@@ -10,16 +10,24 @@ export const useProductStore = defineStore('products', {
     error: null as any,
     isFetching: false,
   }),
-  getters: {},
+  getters: {
+    getProductsByCategory: (state) => (category: number) => {
+      if (category !== 0) {
+        state.products.filter((product) => product.category === category)
+      }
+    },
+    getProductsBySearch: (state) => (search: string) => {
+      if (search !== '') {
+        state.products.filter((product) => product.name.toLowerCase().includes(search.toLowerCase()))
+      }
+    }
+  },
   actions: {
     async fetchProducts() {
       this.isFetching = true
-      console.log('fetching products...')
       try {
         const response = await fetch(`${BASE_API_URL}product/`)
         this.products = await response.json();
-        this.filteredProducts = this.products;
-        this.searchedProducts = this.filteredProducts;
       } catch (error) {
         console.log(error)
         this.error = error
@@ -27,27 +35,22 @@ export const useProductStore = defineStore('products', {
         this.isFetching = false
       }
     },
-    getProductsByCategory(categoryId: number) {
-      if (categoryId === 0) {
-        this.filteredProducts = this.products;
-        this.searchedProducts = this.filteredProducts; // сохранить результаты фильтрации в поисковом массиве
-        return;
-      }
+    async addProduct(product: IProduct) {
+      this.isFetching = true
       try {
-        this.getProductsBySearch(''); // сбросить поиск
-        this.filteredProducts = this.products.filter((product) => product.category === categoryId);
-        this.searchedProducts = this.filteredProducts; // сохранить результаты фильтрации в поисковом массиве
+        const response = await fetch(`${BASE_API_URL}product/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(product),
+        })
+        this.products.push(await response.json())
       } catch (error) {
         console.log(error)
         this.error = error
-      }
-    },
-    getProductsBySearch(search: string) {
-      try {
-        this.searchedProducts = this.filteredProducts.filter((product) => product.name.toLowerCase().includes(search.toLowerCase()))
-      } catch (error) {
-        console.log(error)
-        this.error = error
+      } finally {
+        this.isFetching = false
       }
     }
   },

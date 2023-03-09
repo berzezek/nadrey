@@ -2,7 +2,7 @@
   <div class="d-flex mt-5">
     <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Продукты</h1>
     <flowbite-block-table
-        :columnNames="propsTableNames"
+        :columnNames="productTableColumnsNames"
         :columnValues="products"
         :searchSelect="productCategories"
         @modalForm="modalForm"
@@ -20,11 +20,14 @@
           :modal-title="'Добавить продукт'"
           :modal-footer="false"
           :form-settings="formSettings"
+          :editFormData="product"
           @emitFormData="emitFormData"
           @changeFormProps="changeFormProps"
+          @closeModal="closeModal"
       />
       <flowbite-block-alert
           v-if="showAlert"
+          @closeAlert="closeAlert"
       />
       <button type="button"
               @click="modalForm"
@@ -39,6 +42,7 @@
 <script setup>
 import {useProductStore} from "~/store/productStore";
 import {useProductCategoryStore} from "~/store/productCategoryStore";
+import { productTableColumnsNames } from "~/utils/productTable";
 
 const productStore = useProductStore();
 const productCategoryStore = useProductCategoryStore();
@@ -46,34 +50,42 @@ const productCategoryStore = useProductCategoryStore();
 productStore.fetchProducts();
 productCategoryStore.fetchProductCategories();
 
-const products = computed(() => productStore.searchedProducts);
+const products = computed(() => productStore.products);
 const productCategories = computed(() => productCategoryStore.productCategories);
 
-const propsTableNames = [
-  {name: 'Наименование'},
-  {'descriptions': 'Описание'},
-  {'calories': 'Калории'}
-]
-
 const filterRadio = (categoryId) => {
-  productStore.getProductsByCategory(categoryId);
+  console.log(categoryId)
+
 }
 
 const searchItems = (search) => {
-  productStore.getProductsBySearch(search);
+  console.log(search)
 }
 
 
 const showModal = ref(false);
 const showAlert = ref(false);
 
+let product = ref({
+  name: '',
+  descriptions: '',
+  unit: '',
+  category: '',
+  price: '',
+  id: ''
+})
+
 const modalFormDetail = (id) => {
-  console.log(id)
   showModal.value = true;
+  product.value = products.value.find((item) => item.id === id);
 }
 
 const modalForm = () => {
   showModal.value = true;
+}
+
+const closeModal = () => {
+  showModal.value = false;
 }
 
 const productCategoriesSelect = computed(async () => {
@@ -84,7 +96,7 @@ const productCategoriesSelect = computed(async () => {
 })
 
 
-const formSettings = reactive({
+const formSettings = ref({
   formAction: 'addProduct',
   buttonText: 'Добавить продукт',
   formFields: [
@@ -118,11 +130,12 @@ const formSettings = reactive({
 
 const emitFormData = (data, action) => {
   if (action === 'addProduct') {
-    console.log(productStore.isFetching);
-    console.log('addProduct', data);
+    productStore.addProduct(data);
+    showModal.value = false;
+    showAlert.value = true;
 
   } else if (action === 'addCategory') {
-    // productCategoryStore.addProductCategory(data);
+    console.log('addCategory', data);
   }
 }
 
@@ -139,6 +152,10 @@ const changeFormProps = (method) => {
         }
 
   }
+}
+
+const closeAlert = () => {
+  showAlert.value = false;
 }
 
 </script>
