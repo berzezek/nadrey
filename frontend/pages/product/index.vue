@@ -20,6 +20,7 @@
           />
       <flowbite-block-alert
           v-if="showAlert"
+          @closeAlert="closeAlert"
       />
       <button type="button"
               v-if="!showModal"
@@ -38,6 +39,7 @@ import {productTableSettings} from "~/utils/tableSettings";
 
 import {useProductStore} from "~/store/productStore";
 import {useProductCategoryStore} from "~/store/productCategoryStore";
+import { productTableColumnsNames } from "~/utils/productTable";
 
 const productStore = useProductStore();
 const productCategoryStore = useProductCategoryStore();
@@ -59,7 +61,6 @@ const showAlert = ref(false);
 const productDetail = ref({});
 
 const formSettings = ref(productAddFormSettings);
-
 const addModalForm = () => {
   const categorySelectField = {
     title: 'Категория',
@@ -74,7 +75,6 @@ const addModalForm = () => {
   }
   showModal.value = true;
 }
-
 
 const closeModal = () => {
   showModal.value = false;
@@ -91,6 +91,10 @@ const emitFormData = (data, action) => {
 }
 
 
+
+const closeAlert = () => {
+  showAlert.value = false;
+}
 
 </script>
 
