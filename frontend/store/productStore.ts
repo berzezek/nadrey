@@ -5,21 +5,33 @@ import {IProduct} from "~/types";
 export const useProductStore = defineStore('products', {
   state: () => ({
     products: [] as IProduct[],
+    productDetail: {} as IProduct,
     filteredProducts: [] as IProduct[],
     searchedProducts: [] as IProduct[],
     error: null as any,
     isFetching: false,
   }),
-  getters: {},
+  getters: {
+    getProductsByCategory: (state) => (categoryId: number) => {
+      if (categoryId === 0) {
+        return state.products;
+      }
+      return state.products.filter((product) => product.category === categoryId);
+    },
+    getProductsBySearch: (state) => (search: string) => {
+      if (search === '') {
+        return state.products;
+      }
+      return state.products.filter((product) => product.name.toLowerCase().includes(search.toLowerCase()));
+    }
+  },
   actions: {
     async fetchProducts() {
       this.isFetching = true
-      console.log('fetching products...')
       try {
         const response = await fetch(`${BASE_API_URL}product/`)
         this.products = await response.json();
-        this.filteredProducts = this.products;
-        this.searchedProducts = this.filteredProducts;
+        return this.products
       } catch (error) {
         console.log(error)
         this.error = error
@@ -27,27 +39,35 @@ export const useProductStore = defineStore('products', {
         this.isFetching = false
       }
     },
-    getProductsByCategory(categoryId: number) {
-      if (categoryId === 0) {
-        this.filteredProducts = this.products;
-        this.searchedProducts = this.filteredProducts; // сохранить результаты фильтрации в поисковом массиве
-        return;
-      }
+    async getProductById(id: number) {
+      this.isFetching = true;
       try {
-        this.getProductsBySearch(''); // сбросить поиск
-        this.filteredProducts = this.products.filter((product) => product.category === categoryId);
-        this.searchedProducts = this.filteredProducts; // сохранить результаты фильтрации в поисковом массиве
+        const response = await fetch(`${BASE_API_URL}product/${id}/`)
+        this.productDetail = await response.json();
+        return this.productDetail
       } catch (error) {
         console.log(error)
         this.error = error
+      } finally {
+        this.isFetching = false;
       }
     },
-    getProductsBySearch(search: string) {
+    async addProduct(product: IProduct) {
+      this.isFetching = true;
       try {
-        this.searchedProducts = this.filteredProducts.filter((product) => product.name.toLowerCase().includes(search.toLowerCase()))
+        const response = await fetch(`${BASE_API_URL}product/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(product)
+        })
+        return await response.json();
       } catch (error) {
         console.log(error)
         this.error = error
+      } finally {
+        this.isFetching = false;
       }
     }
   },

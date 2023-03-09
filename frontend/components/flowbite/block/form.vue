@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent="emitFormData">
     <div class="relative z-0 w-full mb-6 group" v-for="field in formSettings.formFields" :key="field.name">
-      <input :type="field.type" :name="field.name" :id="field.name"
+      <input :type="field.type" :name="field.name" :id="field.name" :step="field.step"
              v-if="field.method === 'input'"
              v-model="formData[field.name]"
              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
@@ -16,7 +16,8 @@
               v-model="formData[field.name]"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               :required="field.required">
-        <option v-for="option in field.selectValue" :value="option.value" :key="option.value">{{ option.title }}
+        <option v-for="option in field.selectValue" :value="option.id" :key="option.id">
+          {{ option.name }}
         </option>
       </select>
       <label :for="field.name"
@@ -27,41 +28,39 @@
             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
       {{ formSettings.buttonText }}
     </button>
-    <button type="button"
-            v-if="formSettings.addButton.required"
-            @click="changeFormProps(formSettings.addButton.method)"
-            class="ml-3 text-white bg-yellow-700 hover:bg-yellow-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800">
-      {{ formSettings.addButton.title }}
-    </button>
-
+<!--    <button type="button"-->
+<!--            v-if="formSettings.addButton.required"-->
+<!--            @click="changeFormProps(formSettings.addButton.method)"-->
+<!--            class="ml-3 text-white bg-yellow-700 hover:bg-yellow-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800">-->
+<!--      {{ formSettings.addButton.title }}-->
+<!--    </button>-->
   </form>
 </template>
 
 <script setup>
+import { propsFormSettings } from '~/utils/formSettings'
 
 const props = defineProps({
-  formSettings: {
+  formSettings: propsFormSettings,
+  fetchingData: {
     type: Object,
     required: false,
-    default: () => ({
-      formAction: '',
-      buttonText: 'Добавить',
-      formFields: []
-    }),
+    default: () => {},
   },
 })
 
-const emit = defineEmits(['emitFormData', 'changeFormProps'])
+const emit = defineEmits(['emitFormData'])
 
+// const formData = ref(props.fetchingData)
 const formData = ref({})
 
 const emitFormData = () => {
   emit('emitFormData', formData.value, props.formSettings.formAction)
 }
 
-const changeFormProps = (method) => {
-  emit('changeFormProps', method)
-}
+// const changeFormProps = (method) => {
+//   emit('changeFormProps', method)
+// }
 
 </script>
 
