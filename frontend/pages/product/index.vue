@@ -111,7 +111,8 @@ const emitFormData = async (data, action) => {
     await productStore.addProduct(data);
     closeModal();
     alerting(productAlertSettings);
-  } else if (action === 'editItem') {
+  } else if (action === 'updateItem') {
+    console.log(data)
     await productStore.updateProduct(data);
     closeModal();
     alerting(productEditAlertSettings);

@@ -6,7 +6,7 @@ export const productAddFormSettings = {
   modalTitle: 'Добавить продукт',
   formFields: [
     {title: 'Наименование', type: 'text', name: 'name', required: true, method: 'input'},
-    {title: 'Описание', type: 'text', name: 'descriptions', required: false, method: 'textarea'},
+    {title: 'Описание', type: 'text', name: 'description', required: false, method: 'textarea'},
     {
       title: 'Единица измерения', type: 'text', name: 'unit', required: true, method: 'select', selectValue: [
         {name: 'кг', id: 'kg'},
