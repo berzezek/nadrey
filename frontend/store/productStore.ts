@@ -68,6 +68,41 @@ export const useProductStore = defineStore('products', {
       } finally {
         this.isFetching = false;
       }
+    },
+    async updateProduct(product: IProduct) {
+      this.isFetching = true;
+      try {
+        const response = await fetch(`${BASE_API_URL}product/${product.id}/`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(product)
+        })
+        return await response.json();
+      } catch (error) {
+        console.log(error)
+        this.error = error
+      } finally {
+        this.isFetching = false;
+      }
+    },
+    async deleteProduct(id: number) {
+      this.isFetching = true;
+      try {
+        const response = await fetch(`${BASE_API_URL}product/${id}/`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        })
+        return await response.json();
+      } catch (error) {
+        console.log(error)
+        this.error = error
+      } finally {
+        this.isFetching = false;
+      }
     }
   },
 })

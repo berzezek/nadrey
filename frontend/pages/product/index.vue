@@ -1,5 +1,10 @@
 <template>
   <div class="">
+    <flowbite-block-alert
+        v-if="showAlert"
+        @closeAlert="closeAlert"
+        :alert-settings="alertSettings"
+    />
     <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Продукты</h1>
     <flowbite-block-table
         :columnNames="productTableSettings.columns"
@@ -19,16 +24,13 @@
           @closeModal="closeModal"
           @addModalForm="addModalForm"
           @emitFormData="emitFormData"
-          />
-      <flowbite-block-alert
-          v-if="showAlert"
-          @closeAlert="closeAlert"
-          :alert-settings="alertSettings"
       />
-      <button type="button"
-              v-if="!showModal"
-              @click="addModalForm"
-              class="mt-3 ml-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+
+      <button
+          type="button"
+          v-if="!showModal"
+          @click="addModalForm"
+          class="mt-3 ml-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
         Добавить
       </button>
 
@@ -38,7 +40,7 @@
 
 <script setup>
 import {productAddFormSettings} from "~/utils/formSettings";
-import {productAlertSettings, productTableSettings} from "~/utils/productTable";
+import {productAlertSettings, productDeleteAlertSettings, productTableSettings} from "~/utils/productTable";
 
 import {useProductStore} from "~/store/productStore";
 import {useProductCategoryStore} from "~/store/productCategoryStore";
@@ -46,7 +48,7 @@ import {useProductCategoryStore} from "~/store/productCategoryStore";
 const productStore = useProductStore();
 const productCategoryStore = useProductCategoryStore();
 
-const {data: products} = await useAsyncData('product', () => productStore.fetchProducts());
+const {data: products, pending, error, refresh } = await useAsyncData('product', () => productStore.fetchProducts());
 const {data: productCategories} = await useAsyncData('productCategory', () => productCategoryStore.fetchProductCategories());
 
 const filterRadio = (categoryId) => {
@@ -86,14 +88,29 @@ const closeModal = () => {
 }
 
 const alertSettings = ref({});
-const emitFormData = (data, action) => {
+const emitFormData = async (data, action) => {
   if (action === 'addProduct') {
-    productStore.addProduct(data);
+    await productStore.addProduct(data);
     alertSettings.value = productAlertSettings;
     showAlert.value = true;
     setTimeout(() => {
       showAlert.value = false;
     }, 3000)
+  } else if (action === 'editItem') {
+    await productStore.updateProduct(data);
+    alertSettings.value = productAlertSettings;
+    showAlert.value = true;
+    setTimeout(() => {
+      showAlert.value = false;
+    }, 3000)
+  } else if (action === 'deleteItem') {
+    await productStore.deleteProduct(data);
+    showModal.value = false
+    // alertSettings.value = productDeleteAlertSettings;
+    // showAlert.value = true;
+    // setTimeout(() => {
+    //   showAlert.value = false;
+    // }, 3000)
   }
 
 }
