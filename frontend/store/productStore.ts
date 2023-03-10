@@ -90,13 +90,12 @@ export const useProductStore = defineStore('products', {
     async deleteProduct(id: number) {
       this.isFetching = true;
       try {
-        const response = await fetch(`${BASE_API_URL}product/${id}/`, {
+        await fetch(`${BASE_API_URL}product/${id}/`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json'
           },
         })
-        return await response.json();
       } catch (error) {
         console.log(error)
         this.error = error
