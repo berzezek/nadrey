@@ -1,14 +1,14 @@
 import {IProductCategory} from "~/types";
 
 export const productAddFormSettings = {
-  formAction: 'addProduct',
+  formAction: 'addItem',
   buttonText: 'Добавить',
   modalTitle: 'Добавить продукт',
   formFields: [
     {title: 'Наименование', type: 'text', name: 'name', required: true, method: 'input'},
     {title: 'Описание', type: 'text', name: 'descriptions', required: false, method: 'textarea'},
     {
-      title: 'Единица измерения', type: 'text', required: false, method: 'select', selectValue: [
+      title: 'Единица измерения', type: 'text', name: 'unit', required: true, method: 'select', selectValue: [
         {name: 'кг', id: 'kg'},
         {name: 'гр', id: 'gr'},
         {name: 'л', id: 'l'},

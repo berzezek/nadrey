@@ -4,7 +4,7 @@
   <div class="lg:p-12 md:p-2">
     <slot/>
   </div>
-  <flowbite-block-footer/>
+<!--  <flowbite-block-footer/>-->
 </template>
 
 <script>

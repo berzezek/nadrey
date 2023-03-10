@@ -30,9 +30,10 @@
           <flowbite-block-form
               :formSettings="formSettings"
               :fetchingData="fetchingData"
-              @emitFormData="emitFormData"
               @changeFormProps="changeFormProps"
               @closeModal="closeModal"
+              @emitFormData="emitFormData"
+
           />
         </div>
         <!-- Modal footer -->
@@ -55,7 +56,7 @@
 </template>
 
 <script setup>
-import { propsFormSettings } from '~/utils/formSettings'
+import {propsFormSettings} from '~/utils/formSettings'
 
 const props = defineProps({
   buttonText: {
@@ -76,7 +77,11 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['emitFormData', 'changeFormProps', 'closeModal'])
+const emit = defineEmits([
+  'emitFormData',
+  'changeFormProps',
+  'closeModal',
+])
 
 const emitFormData = (data, action) => {
   emit('emitFormData', data, action)

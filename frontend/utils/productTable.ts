@@ -14,6 +14,14 @@ export const productDeleteAlertSettings = {
   iconColor: 'red-500'
 }
 
+export const productEditAlertSettings = {
+  title: 'Успешно',
+  text: 'Продукт успешно изменен',
+  type: 'success',
+  icon: 'check-circle',
+  iconColor: 'red-500'
+}
+
 export const productTableSettings = {
   columns: [
     {name: 'Наименование'},

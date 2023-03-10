@@ -40,7 +40,12 @@
 
 <script setup>
 import {productAddFormSettings} from "~/utils/formSettings";
-import {productAlertSettings, productDeleteAlertSettings, productTableSettings} from "~/utils/productTable";
+import {
+  productAlertSettings,
+  productDeleteAlertSettings,
+  productEditAlertSettings,
+  productTableSettings
+} from "~/utils/productTable";
 
 import {useProductStore} from "~/store/productStore";
 import {useProductCategoryStore} from "~/store/productCategoryStore";
@@ -48,9 +53,13 @@ import {useProductCategoryStore} from "~/store/productCategoryStore";
 const productStore = useProductStore();
 const productCategoryStore = useProductCategoryStore();
 
-const {data: products, pending, error, refresh } = await useAsyncData('product', () => productStore.fetchProducts());
+const {
+  data: products,
+  pending,
+  error,
+} = await useAsyncData('product', () => productStore.fetchProducts());
 const {data: productCategories} = await useAsyncData('productCategory', () => productCategoryStore.fetchProductCategories());
-
+const productsRefresh = () => refreshNuxtData('product')
 const filterRadio = (categoryId) => {
   products.value = productStore.getProductsByCategory(categoryId);
 }
@@ -84,36 +93,36 @@ const addModalForm = () => {
 }
 const closeModal = () => {
   showModal.value = false;
+  productsRefresh();
+}
 
+const alerting = (data) => {
+  alertSettings.value = data
+  showAlert.value = true;
+    setTimeout(() => {
+      showAlert.value = false;
+    }, 5000)
 }
 
 const alertSettings = ref({});
+
 const emitFormData = async (data, action) => {
-  if (action === 'addProduct') {
+  if (action === 'addItem') {
     await productStore.addProduct(data);
-    alertSettings.value = productAlertSettings;
-    showAlert.value = true;
-    setTimeout(() => {
-      showAlert.value = false;
-    }, 3000)
+    closeModal();
+    alerting(productAlertSettings);
   } else if (action === 'editItem') {
     await productStore.updateProduct(data);
-    alertSettings.value = productAlertSettings;
-    showAlert.value = true;
-    setTimeout(() => {
-      showAlert.value = false;
-    }, 3000)
+    closeModal();
+    alerting(productEditAlertSettings);
   } else if (action === 'deleteItem') {
     await productStore.deleteProduct(data);
-    showModal.value = false
-    // alertSettings.value = productDeleteAlertSettings;
-    // showAlert.value = true;
-    // setTimeout(() => {
-    //   showAlert.value = false;
-    // }, 3000)
+    closeModal();
+    alerting(productDeleteAlertSettings);
   }
-
 }
+
+
 const closeAlert = () => {
   showAlert.value = false;
 
