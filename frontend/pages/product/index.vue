@@ -6,11 +6,22 @@
         :alert-settings="alertSettings"
     />
     <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Продукты</h1>
+    <div class="md:flex">
+
+      <flowbite-block-dropdownselect
+          :select-text="'Выбрать категорию'"
+          :searchSelect="productCategories"
+          @changeSelect="changeSelect"
+      />
+      <flowbite-block-search
+          @searchItems="searchItems"
+      />
+    </div>
     <flowbite-block-table
         :columnNames="productTableSettings.columns"
         :columnValues="products"
         :searchSelect="productCategories"
-        @filterRadio="filterRadio"
+        @changeSelect="changeSelect"
         @searchItems="searchItems"
         @modalFormDetail="modalFormDetail"
         @changePage="changePage"
@@ -47,13 +58,13 @@
 </template>
 
 <script setup>
-import {productAddFormSettings} from "~/utils/formSettings";
+import {productAddFormSettings} from "~/utils/productUtils";
 import {
   productAlertSettings,
   productDeleteAlertSettings,
   productEditAlertSettings,
   productTableSettings
-} from "~/utils/productTable";
+} from "~/utils/productUtils";
 
 import {useProductStore} from "~/store/productStore";
 import {useProductCategoryStore} from "~/store/productCategoryStore";
@@ -68,7 +79,7 @@ const {
 } = await useAsyncData('product', () => productStore.fetchProducts());
 const {data: productCategories} = await useAsyncData('productCategory', () => productCategoryStore.fetchProductCategories());
 const productsRefresh = () => refreshNuxtData('product')
-const filterRadio = (categoryId) => {
+const changeSelect = (categoryId) => {
   products.value = productStore.getProductsByCategory(categoryId);
 }
 

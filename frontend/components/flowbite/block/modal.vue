@@ -56,7 +56,7 @@
 </template>
 
 <script setup>
-import {propsFormSettings} from '~/utils/formSettings'
+import {propsFormSettings} from '~/utils/productUtils'
 
 const props = defineProps({
   buttonText: {
