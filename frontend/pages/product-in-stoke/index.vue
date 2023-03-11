@@ -13,8 +13,8 @@
       />
     </div>
     <flowbite-block-table
-        :columnNames="productCategoryTableSettings.columns"
-        :columnValues="productCategories"
+        :columnNames="productStokeTableSettings.columns"
+        :columnValues="productsStock"
         @modalFormDetail="modalFormDetail"
     />
 
@@ -22,7 +22,7 @@
       <flowbite-block-modal
           v-if="showModal"
           :formSettings="productCategoryAddFormSettings"
-          :fetchingData="productCategory"
+          :fetchingData="productStoke"
           @closeModal="closeModal"
           @addModalForm="addModalForm"
           @emitFormData="emitFormData"
@@ -43,22 +43,25 @@
 
 <script setup>
 import {
-  productCategoryAddFormSettings,
-  productCategoryAlertSettings,
-  productCategoryDeleteAlertSettings,
-  productCategoryEditAlertSettings,
-  productCategoryTableSettings
-} from "~/utils/productCategoryUtils";
+  productStokeAddFormSettings,
+  productStokeAlertSettings,
+  productStokeDeleteAlertSettings,
+  productStokeEditAlertSettings,
+  productStokeTableSettings
+} from "~/utils/productStokeUtils";
 
-import {useProductCategoryStore} from "~/store/productCategoryStore";
+import { useProductStokeStore } from "~/store/productStockStore";
+import { useProductCategoryStore } from "~/store/productCategoryStore";
 
+const productStockStore = useProductStokeStore();
 const productCategoryStore = useProductCategoryStore();
 
-
-const {data: productCategories} = await useAsyncData('productCategory', () => productCategoryStore.fetchProductCategories());
-const productCategoryRefresh = () => refreshNuxtData('productCategory')
+const { data: productsStock } = await useAsyncData('productsStock', () => productStockStore.fetchProductsStoke());
+const { data: productCategory } = await useAsyncData('productCategory', () => productCategoryStore.fetchProductCategories())
+const productStockRefresh = () => refreshNuxtData('productsStoke');
 const searchItems = (search) => {
-  productCategories.value = productCategoryStore.getProductCategoryBySearch(search);
+  console.log(search);
+  // productCategories.value = productCategoryStore.getProductCategoryBySearch(search);
 }
 
 
@@ -66,17 +69,17 @@ const showModal = ref(false);
 const showAlert = ref(false);
 
 const formSettings = ref(productCategoryAddFormSettings);
-const productCategory = ref({});
+const productStoke = ref({});
 
 const addModalForm = () => {
-  productCategory.value = {};
-  formSettings.value.modalTitle = `Добавить категорию`;
+  productStoke.value = {};
+  formSettings.value.modalTitle = `Добавить продукт на склад`;
   formSettings.value.addMode = true;
   showModal.value = true;
 }
 const closeModal = () => {
   showModal.value = false;
-  productCategoryRefresh();
+  productStockRefresh();
 }
 
 const alerting = (data) => {
@@ -91,15 +94,15 @@ const alertSettings = ref({});
 
 const emitFormData = async (data, action) => {
   if (action === 'addItem') {
-    await productCategoryStore.addProductCategory(data);
+    // await productStockStore.addProductCategory(data);
     closeModal();
     alerting(productCategoryAlertSettings);
   } else if (action === 'updateItem') {
-    await productCategoryStore.updateProductCategory(data);
+    // await productStockStore.updateProductCategory(data);
     closeModal();
     alerting(productCategoryEditAlertSettings);
   } else if (action === 'deleteItem') {
-    await productCategoryStore.deleteProductCategory(data);
+    // await productStockStore.deleteProductCategory(data);
     closeModal();
     alerting(productCategoryDeleteAlertSettings);
   }
@@ -111,8 +114,8 @@ const closeAlert = () => {
 
 }
 const modalFormDetail = (id) => {
-  productCategory.value = productCategories.value.find(productCategory => productCategory.id === id);
-  formSettings.value.modalTitle = `Редактировать категорию - ${productCategory.value.name}`;
+  productStoke.value = productStoke.value.find(productStoke => productStoke.id === id);
+  formSettings.value.modalTitle = `Редактировать продукт - ${productStoke.value.name}`;
   formSettings.value.addMode = false;
   formSettings.value.buttonText = `Редактировать`;
   showModal.value = true;
