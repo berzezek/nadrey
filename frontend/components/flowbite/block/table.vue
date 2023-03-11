@@ -22,13 +22,6 @@
       </tr>
       </tbody>
     </table>
-    <div class="flex items-center my-5">
-      <div class="mx-auto">
-        <flowbite-block-pagination
-
-        />
-      </div>
-    </div>
   </div>
 </template>
 
@@ -48,18 +41,10 @@ const props = defineProps({
 
 const emit = defineEmits([
   'modalFormDetail',
-  'changePage'
 ])
 const modalFormDetail = (id) => {
   emit('modalFormDetail', id)
 }
-
-const changePage = (page) => {
-  emit('changePage', page)
-}
-
-
-
 
 </script>
 

@@ -56,10 +56,14 @@
 </template>
 
 <script setup>
-import {propsFormSettings} from '~/utils/productUtils'
 
 const props = defineProps({
-  formSettings: propsFormSettings,
+  formSettings: {
+    type: Object,
+    required: false,
+    default: () => {
+    },
+  },
   fetchingData: {
     type: Object,
     required: false,

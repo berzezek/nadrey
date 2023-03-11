@@ -6,8 +6,7 @@
         :alert-settings="alertSettings"
     />
     <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Продукты</h1>
-    <div class="md:flex">
-
+    <div class="md:flex mb-3">
       <flowbite-block-dropdownselect
           :select-text="'Выбрать категорию'"
           :searchSelect="productCategories"
@@ -20,11 +19,7 @@
     <flowbite-block-table
         :columnNames="productTableSettings.columns"
         :columnValues="products"
-        :searchSelect="productCategories"
-        @changeSelect="changeSelect"
-        @searchItems="searchItems"
         @modalFormDetail="modalFormDetail"
-        @changePage="changePage"
     />
 
     <div class="flex items-center">
@@ -96,6 +91,7 @@ const product = ref({});
 
 const addModalForm = () => {
   product.value = {};
+  formSettings.value.modalTitle = `Добавить продукт`;
   const categorySelectField = {
     title: 'Категория',
     type: 'text',
@@ -166,9 +162,6 @@ const modalFormDetail = (id) => {
   showModal.value = true;
 }
 
-const changePage = (page) => {
-  console.log(page)
-}
 
 </script>
 
