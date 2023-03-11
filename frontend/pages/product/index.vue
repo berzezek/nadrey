@@ -25,14 +25,22 @@
           @addModalForm="addModalForm"
           @emitFormData="emitFormData"
       />
+      <div class="flex items-between">
 
-      <button
-          type="button"
-          v-if="!showModal"
-          @click="addModalForm"
-          class="mt-3 ml-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-        Добавить
-      </button>
+        <button
+            type="button"
+            @click="addModalForm"
+            class="mt-3 ml-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+          Добавить
+        </button>
+
+        <button
+            type="button"
+            @click="$router.push('/product-category')"
+            class="mt-3 ml-3 text-white bg-green-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+          Добавить категорию
+        </button>
+      </div>
 
     </div>
   </div>
@@ -88,8 +96,8 @@ const addModalForm = () => {
   if (formSettings.value.formFields.length === 5) {
     formSettings.value.formFields.push(categorySelectField)
   }
+  formSettings.value.addMode = true;
   showModal.value = true;
-
 }
 const closeModal = () => {
   showModal.value = false;
@@ -131,7 +139,7 @@ const closeAlert = () => {
 const modalFormDetail = (id) => {
   product.value = products.value.find(product => product.id === id);
   formSettings.value.modalTitle = `Редактировать продукт - ${product.value.name}`;
-  formSettings.value.deleteMode = true;
+  formSettings.value.addMode = false;
   formSettings.value.buttonText = `Редактировать`;
   const categorySelectField = {
     title: 'Категория',
