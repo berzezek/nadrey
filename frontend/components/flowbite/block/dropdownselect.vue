@@ -22,7 +22,7 @@
          data-popper-reference-hidden="" data-popper-escaped="" data-popper-placement="top"
          style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate3d(522.5px, 3847.5px, 0px);">
       <ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownRadioButton">
-        <li v-for="select in searchSelect" :key="select.id">
+        <li v-for="select in selectValue" :key="select.id">
           <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
             <input id="filter-radio-example-1" type="radio" value="" name="filter-radio"
                    @input="changeSelect(select.id)"
@@ -39,18 +39,22 @@
 </template>
 
 <script setup>
+import { useKitchenStore } from "~/store/kitchenStore";
+
+const kitchenStore = useKitchenStore()
+
 const props = defineProps({
   selectText: {
     type: String,
     default: 'Выбрать'
   },
   searchSelect: {
-    type: Array,
-    default: []
+    type: String,
+    default: ''
   }
 })
 
-console.log(props.searchSelect)
+const {data: selectValue} = await useLazyAsyncData(props.searchSelect, () => kitchenStore.fetchItems(props.searchSelect));
 
 const emit = defineEmits(['changeSelect'])
 

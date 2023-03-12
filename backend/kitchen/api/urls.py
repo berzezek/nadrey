@@ -21,15 +21,15 @@ from .views import (
 router = DefaultRouter()
 router.register('product-category', ProductCategoryViewSet)
 router.register('product', ProductViewSet)
-router.register('store', StoreViewSet)
-router.register('product-in-stoke', ProductInStoreViewSet)
+router.register('stock', StoreViewSet)
+router.register('product-in-stock', ProductInStoreViewSet)
 router.register('ingredients', IngredientsViewSet)
 router.register('category-recipe', CategoryRecipeViewSet)
 router.register('recipe', RecipeViewSet)
 router.register('client', ClientViewSet)
 router.register('order', OrderViewSet)
 router.register('card', CardViewSet)
-# router.register('grouped-product-in-stoke', GroupedProductInStoreViewSet)
+# router.register('grouped-product-in-stock', GroupedProductInStoreViewSet)
 
 urlpatterns = [
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),

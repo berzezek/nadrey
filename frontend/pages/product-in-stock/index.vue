@@ -5,7 +5,7 @@
         @closeAlert="closeAlert"
         :alert-settings="alertSettings"
     />
-    <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Категория продуктов</h1>
+    <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Продукты на складе</h1>
     <div class="md:flex mb-3">
 
       <flowbite-block-search
@@ -21,7 +21,7 @@
     <div class="flex items-center">
       <flowbite-block-modal
           v-if="showModal"
-          :formSettings="productCategoryAddFormSettings"
+          :formSettings="productStockAddFormSettings"
           :fetchingData="productStoke"
           @closeModal="closeModal"
           @addModalForm="addModalForm"
@@ -35,6 +35,12 @@
             class="mt-3 ml-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
           Добавить
         </button>
+        <button
+            type="button"
+            @click="$router.push('/stock')"
+            class="mt-3 ml-3 text-white bg-green-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+          Добавить склад
+        </button>
       </div>
 
     </div>
@@ -42,38 +48,62 @@
 </template>
 
 <script setup>
+import {productStockAddFormSettings} from "~/utils/forms";
+import {productStokeTableSettings} from "~/utils/tables";
 import {
-  productStokeAddFormSettings,
-  productStokeAlertSettings,
-  productStokeDeleteAlertSettings,
-  productStokeEditAlertSettings,
-  productStokeTableSettings
-} from "~/utils/productStokeUtils";
+  itemAlertSettings,
+  itemDeleteAlertSettings,
+  itemEditAlertSettings,
+} from "~/utils/alerts";
 
-import { useProductStokeStore } from "~/store/productStockStore";
-import { useProductCategoryStore } from "~/store/productCategoryStore";
+import {useKitchenStore} from "~/store/kitchenStore";
 
-const productStockStore = useProductStokeStore();
-const productCategoryStore = useProductCategoryStore();
+const kitchenStore = useKitchenStore();
 
-const { data: productsStock } = await useAsyncData('productsStock', () => productStockStore.fetchProductsStoke());
-const { data: productCategory } = await useAsyncData('productCategory', () => productCategoryStore.fetchProductCategories())
-const productStockRefresh = () => refreshNuxtData('productsStoke');
+const {data: productsStock} = await useAsyncData('product-stock', () => kitchenStore.fetchItems('product-in-stock'));
+console.log(productsStock.value);
+const {data: store} = await useAsyncData('stock', () => kitchenStore.fetchItems('stock'));
+const {data: products} = await useAsyncData('products', () => kitchenStore.fetchItems('product'));
+const productStockRefresh = () => refreshNuxtData('product-stock');
 const searchItems = (search) => {
   console.log(search);
   // productCategories.value = productCategoryStore.getProductCategoryBySearch(search);
 }
 
-
 const showModal = ref(false);
-const showAlert = ref(false);
 
-const formSettings = ref(productCategoryAddFormSettings);
+
+const showAlert = ref(false);
+const formSettings = ref(productStockAddFormSettings);
+
 const productStoke = ref({});
+const addFormSelect = () => {
+  const productSelectField = {
+    title: 'Продукт',
+    type: 'text',
+    name: 'product',
+    required: true,
+    method: 'select',
+    selectValue: products.value,
+  }
+  const storeSelectField = {
+    title: 'Склад',
+    type: 'text',
+    name: 'store',
+    required: true,
+    method: 'select',
+    selectValue: store.value,
+  }
+  if (formSettings.value.formFields.length === 2) {
+    formSettings.value.formFields.unshift(storeSelectField)
+    formSettings.value.formFields.unshift(productSelectField)
+  }
+}
 
 const addModalForm = () => {
   productStoke.value = {};
   formSettings.value.modalTitle = `Добавить продукт на склад`;
+  addFormSelect();
   formSettings.value.addMode = true;
   showModal.value = true;
 }
@@ -96,15 +126,15 @@ const emitFormData = async (data, action) => {
   if (action === 'addItem') {
     // await productStockStore.addProductCategory(data);
     closeModal();
-    alerting(productCategoryAlertSettings);
+    alerting(itemAlertSettings);
   } else if (action === 'updateItem') {
     // await productStockStore.updateProductCategory(data);
     closeModal();
-    alerting(productCategoryEditAlertSettings);
+    alerting(itemEditAlertSettings);
   } else if (action === 'deleteItem') {
     // await productStockStore.deleteProductCategory(data);
     closeModal();
-    alerting(productCategoryDeleteAlertSettings);
+    alerting(itemDeleteAlertSettings);
   }
 }
 
@@ -114,10 +144,11 @@ const closeAlert = () => {
 
 }
 const modalFormDetail = (id) => {
-  productStoke.value = productStoke.value.find(productStoke => productStoke.id === id);
-  formSettings.value.modalTitle = `Редактировать продукт - ${productStoke.value.name}`;
+  productStoke.value = productsStock.value.find(product => product.id === id);
+  formSettings.value.modalTitle = `Редактировать продукт - `;
   formSettings.value.addMode = false;
   formSettings.value.buttonText = `Редактировать`;
+  addFormSelect();
   showModal.value = true;
 }
 

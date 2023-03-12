@@ -1,5 +1,5 @@
 export const NavLinks = [
   {title: 'Главная', path: '/'},
   {title: 'Продукты', path: '/product'},
-  {title: 'Склад', path: '/product-in-stoke'}
+  {title: 'Склад', path: '/product-in-stock'}
 ]

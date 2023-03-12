@@ -56,7 +56,7 @@
 </template>
 
 <script setup>
-import {propsFormSettings} from '~/utils/productUtils'
+import {propsFormSettings} from '~/utils/forms'
 
 const props = defineProps({
   buttonText: {
@@ -67,7 +67,13 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  formSettings: propsFormSettings,
+  formSettings: {
+    type: Object,
+    required: false,
+    default: () => {
+      return propsFormSettings
+    }
+  },
   fetchingData: {
     type: Object,
     required: false,

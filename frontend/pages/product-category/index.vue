@@ -42,23 +42,23 @@
 </template>
 
 <script setup>
+import {productCategoryAddFormSettings } from "~/utils/forms";
+import {productCategoryTableSettings } from "~/utils/tables";
 import {
-  productCategoryAddFormSettings,
-  productCategoryAlertSettings,
-  productCategoryDeleteAlertSettings,
-  productCategoryEditAlertSettings,
-  productCategoryTableSettings
-} from "~/utils/productCategoryUtils";
+  itemAlertSettings,
+  itemDeleteAlertSettings,
+  itemEditAlertSettings,
+} from "~/utils/alerts";
 
-import {useProductCategoryStore} from "~/store/productCategoryStore";
+import {useKitchenStore} from "~/store/kitchenStore";
 
-const productCategoryStore = useProductCategoryStore();
+const kitchenStore = useKitchenStore();
 
 
-const {data: productCategories} = await useAsyncData('productCategory', () => productCategoryStore.fetchProductCategories());
-const productCategoryRefresh = () => refreshNuxtData('productCategory')
+const {data: productCategories} = await useAsyncData('product-category', () => kitchenStore.fetchItems('product-category'));
+const productCategoryRefresh = () => refreshNuxtData('product-category')
 const searchItems = (search) => {
-  productCategories.value = productCategoryStore.getProductCategoryBySearch(search);
+  productCategories.value = kitchenStore.getItemsBySearch(search, 'category');
 }
 
 
@@ -91,17 +91,17 @@ const alertSettings = ref({});
 
 const emitFormData = async (data, action) => {
   if (action === 'addItem') {
-    await productCategoryStore.addProductCategory(data);
+    await kitchenStore.addItem(data, 'product-category');
     closeModal();
-    alerting(productCategoryAlertSettings);
+    alerting(itemAlertSettings);
   } else if (action === 'updateItem') {
-    await productCategoryStore.updateProductCategory(data);
+    await kitchenStore.updateItem(data, data.id, 'product-category');
     closeModal();
-    alerting(productCategoryEditAlertSettings);
+    alerting(itemEditAlertSettings);
   } else if (action === 'deleteItem') {
-    await productCategoryStore.deleteProductCategory(data);
+    await kitchenStore.deleteItem(data, 'product-category');
     closeModal();
-    alerting(productCategoryDeleteAlertSettings);
+    alerting(itemDeleteAlertSettings);
   }
 }
 

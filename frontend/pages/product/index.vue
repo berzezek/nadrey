@@ -9,7 +9,7 @@
     <div class="md:flex mb-3">
       <flowbite-block-dropdownselect
           :select-text="'Выбрать категорию'"
-          :searchSelect="productCategories"
+          :searchSelect="'product-category'"
           @changeSelect="changeSelect"
       />
       <flowbite-block-search
@@ -53,35 +53,29 @@
 </template>
 
 <script setup>
-import {productAddFormSettings} from "~/utils/productUtils";
+import {productAddFormSettings} from "~/utils/forms";
+import {productTableSettings} from "~/utils/tables";
 import {
-  productAlertSettings,
-  productDeleteAlertSettings,
-  productEditAlertSettings,
-  productTableSettings
-} from "~/utils/productUtils";
+  itemAlertSettings,
+  itemDeleteAlertSettings,
+  itemEditAlertSettings,
+} from "~/utils/alerts";
 
-import {useProductStore} from "~/store/productStore";
-import {useProductCategoryStore} from "~/store/productCategoryStore";
+import { useKitchenStore } from "~/store/kitchenStore";
 
-const productStore = useProductStore();
-const productCategoryStore = useProductCategoryStore();
+const kitchenStore = useKitchenStore();
 
-const {
-  data: products,
-  pending,
-  error,
-} = await useAsyncData('product', () => productStore.fetchProducts());
-const {data: productCategories} = await useAsyncData('productCategory', () => productCategoryStore.fetchProductCategories());
+const {data: products} = await useLazyAsyncData('product', () => kitchenStore.fetchItems('product'));
+const {data: productCategories} = await useLazyAsyncData('product-category', () => kitchenStore.fetchItems('product-category'));
+
 const productsRefresh = () => refreshNuxtData('product')
 const changeSelect = (categoryId) => {
-  products.value = productStore.getProductsByCategory(categoryId);
+  products.value = kitchenStore.getItemsById(categoryId, 'category');
 }
 
 const searchItems = (search) => {
-  products.value = productStore.getProductsBySearch(search);
+  products.value = kitchenStore.getItemsBySearch(search, 'product');
 }
-
 
 const showModal = ref(false);
 const showAlert = ref(false);
@@ -89,9 +83,7 @@ const showAlert = ref(false);
 const formSettings = ref(productAddFormSettings);
 const product = ref({});
 
-const addModalForm = () => {
-  product.value = {};
-  formSettings.value.modalTitle = `Добавить продукт`;
+const addProductCategorySelect = () => {
   const categorySelectField = {
     title: 'Категория',
     type: 'text',
@@ -103,6 +95,12 @@ const addModalForm = () => {
   if (formSettings.value.formFields.length === 5) {
     formSettings.value.formFields.push(categorySelectField)
   }
+}
+
+const addModalForm = () => {
+  product.value = {};
+  formSettings.value.modalTitle = `Добавить продукт`;
+  addProductCategorySelect();
   formSettings.value.addMode = true;
   showModal.value = true;
 }
@@ -123,45 +121,33 @@ const alertSettings = ref({});
 
 const emitFormData = async (data, action) => {
   if (action === 'addItem') {
-    await productStore.addProduct(data);
+    await kitchenStore.addItem(data, 'product');
     closeModal();
-    alerting(productAlertSettings);
+    alerting(itemAlertSettings);
   } else if (action === 'updateItem') {
     console.log(data)
-    await productStore.updateProduct(data);
+    await kitchenStore.updateItem(data, data.id, 'product');
     closeModal();
-    alerting(productEditAlertSettings);
+    alerting(itemEditAlertSettings);
   } else if (action === 'deleteItem') {
-    await productStore.deleteProduct(data);
+    await kitchenStore.deleteItem(data, 'product');
     closeModal();
-    alerting(productDeleteAlertSettings);
+    alerting(itemDeleteAlertSettings);
   }
 }
 
-
 const closeAlert = () => {
   showAlert.value = false;
-
 }
+
 const modalFormDetail = (id) => {
   product.value = products.value.find(product => product.id === id);
   formSettings.value.modalTitle = `Редактировать продукт - ${product.value.name}`;
   formSettings.value.addMode = false;
   formSettings.value.buttonText = `Редактировать`;
-  const categorySelectField = {
-    title: 'Категория',
-    type: 'text',
-    name: 'category',
-    required: true,
-    method: 'select',
-    selectValue: productCategories.value,
-  }
-  if (formSettings.value.formFields.length === 5) {
-    formSettings.value.formFields.push(categorySelectField)
-  }
+  addProductCategorySelect();
   showModal.value = true;
 }
-
 
 </script>
 
