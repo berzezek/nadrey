@@ -13,7 +13,7 @@
       />
     </div>
     <flowbite-block-table
-        :columnNames="productStokeEditTableSettings.columns"
+        :columnNames="productStockEditTableSettings.columns"
         :columnValues="productStockTransaction"
         @modalFormDetail="modalFormDetail"
     />
@@ -41,7 +41,7 @@
 
 <script setup>
 import {productStockAddFormSettings} from "~/utils/forms";
-import {productStokeEditTableSettings} from "~/utils/tables";
+import {productStockEditTableSettings} from "~/utils/tables";
 import {
   itemAlertSettings,
   itemDeleteAlertSettings,
@@ -53,12 +53,14 @@ import {useKitchenStore} from "~/store/kitchenStore";
 const kitchenStore = useKitchenStore();
 
 const {data: productsStock} = await useAsyncData('product-stock', () => kitchenStore.fetchItems('product-in-stock'));
+const productsStockRefresh = () => refreshNuxtData('product-stock');
 
 const productStockTransaction = computed(() => {
   return productsStock.value.map((item) => {
     if (item.price === null) {
-      item.quantity = -item.quantity;
-      item.price = 'Списание';
+      item.transaction = 'Списание';
+    } else {
+      item.transaction = 'Приход';
     }
     return item;
   });
@@ -111,6 +113,7 @@ const addModalForm = () => {
   showModal.value = true;
 }
 const closeModal = () => {
+  productsStockRefresh();
   showModal.value = false;
 }
 
@@ -131,11 +134,12 @@ const emitFormData = async (data, action) => {
     closeModal();
     alerting(itemAlertSettings);
   } else if (action === 'updateItem') {
-    // await productStockStore.updateProductCategory(data);
+    await kitchenStore.updateItem(data, data.id, 'product-in-stock');
     closeModal();
     alerting(itemEditAlertSettings);
   } else if (action === 'deleteItem') {
-    // await productStockStore.deleteProductCategory(data);
+    console.log(data)
+    await kitchenStore.deleteItem(data, 'product-in-stock');
     closeModal();
     alerting(itemDeleteAlertSettings);
   }
@@ -147,7 +151,7 @@ const closeAlert = () => {
 
 }
 const modalFormDetail = (id) => {
-  productStoke.value = productsStock.value.find(product => product.id === id);
+  productStock.value = productsStock.value.find(product => product.id === id);
   formSettings.value.modalTitle = `Редактировать продукт - `;
   formSettings.value.addMode = false;
   formSettings.value.buttonText = `Редактировать`;

@@ -39,7 +39,7 @@
         />
         <flowbite-ui-button
             @click="$router.push('/product-category')"
-            buttonColor="green"
+            buttonColor="blue"
             buttonText="Добавить категорию"
         />
       </div>

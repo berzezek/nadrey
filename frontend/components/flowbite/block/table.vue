@@ -17,7 +17,8 @@
         <th class="px-6 py-3 text-center">{{ index + 1 }}</th>
         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
             v-for="colName in columnNames" :key="colName">
-          {{ colValue[Object.keys(colName)[0]] }}
+          <span v-if="Object.keys(colName) != 'image'">{{ colValue[Object.keys(colName)[0]] }}</span>
+          <img v-else class="rounded-full w-12 h-12" :src="colValue[Object.keys(colName)[0]]" :alt="colValue.name">
         </th>
       </tr>
       </tbody>

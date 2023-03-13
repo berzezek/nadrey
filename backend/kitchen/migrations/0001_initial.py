@@ -134,7 +134,7 @@ class Migration(migrations.Migration):
                 ('date', models.DateField(auto_now_add=True)),
                 ('date_completed', models.DateField(blank=True, null=True, verbose_name='Дата выполнения')),
                 ('is_completed', models.BooleanField(default=False, verbose_name='Выполнен')),
-                ('recipe', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='kitchen.recipe', verbose_name='Рецепт')),
+                ('cooking-recipe', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='kitchen.cooking-recipe', verbose_name='Рецепт')),
             ],
         ),
         migrations.AddField(

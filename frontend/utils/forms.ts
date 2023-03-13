@@ -57,12 +57,27 @@ export const productStockAddFormSettings = {
     },
     {title: 'Описание', type: 'text', name: 'description', required: false, method: 'textarea'},
     // {title: 'Срок годности', type: 'date', name: 'expiration_date', required: false, method: 'input'},
-  ],
-  addButton: {
-    title: 'Добавить категорию',
-    method: 'addCategory',
-    required: true,
-  }
+  ]
+};
+
+export const recipeCategoryAddFormSettings = {
+  formAction: 'addItem',
+  buttonText: 'Добавить',
+  modalTitle: 'Добавить рецепт',
+  formFields: [
+    {title: 'Наименование', type: 'text', name: 'name', required: true, method: 'input'},
+    {title: 'Описание', type: 'text', name: 'description', required: false, method: 'textarea'},
+  ]
+};
+
+export const recipeAddFormSettings = {
+  formAction: 'addItem',
+  buttonText: 'Добавить',
+  modalTitle: 'Добавить рецепт',
+  formFields: [
+    {title: 'Наименование', type: 'text', name: 'name', required: true, method: 'input'},
+    {title: 'Описание', type: 'text', name: 'description', required: false, method: 'textarea'},
+  ]
 };
 
 export const propsFormSettings = {
