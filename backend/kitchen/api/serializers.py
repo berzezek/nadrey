@@ -34,19 +34,7 @@ class StoreSerializer(ModelSerializer):
 
 class ProductInStoreSerializer(ModelSerializer):
     product_name = CharField(source='product.name', read_only=True)
-    # def get_quantity_for_product_in_store(self, obj):
-    #     quantity = 0
-    #     for product in ProductInStore.objects.filter(product=obj.product):
-    #         if product.transaction_type == 'in':
-    #             quantity += product.quantity
-    #         else:
-    #             quantity -= product.quantity
-    #     return quantity
-    #
-    # get_quantity = SerializerMethodField(
-    #     method_name='get_quantity_for_product_in_store',
-    #     read_only=True,
-    # )
+    product_unit = CharField(source='product.unit', read_only=True)
 
     class Meta:
         model = ProductInStore
@@ -54,9 +42,8 @@ class ProductInStoreSerializer(ModelSerializer):
             'id',
             'product',
             'product_name',
-            'transaction_type',
+            'product_unit',
             'quantity',
-            # 'get_quantity',
             'price',
             'expiration_date',
             'description',

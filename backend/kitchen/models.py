@@ -29,7 +29,7 @@ class Product(models.Model):
 
     name = models.CharField(max_length=255, verbose_name='Наименование')
     description = models.TextField(null=True, blank=True, verbose_name='Описание')
-    unit = models.CharField(max_length=10, choices=UNIT_CHOICES, default='kg', verbose_name='Единица измерения')
+    unit = models.CharField(max_length=15, choices=UNIT_CHOICES, default='kg', verbose_name='Единица измерения')
     weight = models.FloatField(verbose_name='Вес', default=1)
     calories = models.IntegerField(null=True, blank=True, verbose_name='Калорийность ккал', default=0)
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, null=True, blank=True,
@@ -59,11 +59,6 @@ class Store(models.Model):
 
 
 class ProductInStore(models.Model):
-    TRANSACTION_TYPE = (
-        ('in', 'Приход'),
-        ('out', 'Расход'),
-        ('trash', 'Списание')
-    )
     class Meta:
         verbose_name = 'Продукт на складе'
         verbose_name_plural = 'Продукты на складе'
@@ -73,7 +68,6 @@ class ProductInStore(models.Model):
     date = models.DateField(auto_now_add=True)
     expiration_date = models.DateField(null=True, blank=True, verbose_name='Срок годности')
     quantity = models.FloatField(verbose_name='Количество')
-    transaction_type = models.CharField(max_length=255, choices=TRANSACTION_TYPE, verbose_name='Тип транзакции')
     price = models.FloatField(verbose_name='Закупочная цена', null=True, blank=True)
     store = models.ForeignKey(Store, on_delete=models.CASCADE, verbose_name='Склад', default=1)
 

@@ -5,7 +5,7 @@
         @closeAlert="closeAlert"
         :alert-settings="alertSettings"
     />
-    <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Продукты на складе</h1>
+    <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Транзакции продуктов на складе</h1>
     <div class="md:flex mb-3">
 
       <flowbite-block-search
@@ -13,15 +13,16 @@
       />
     </div>
     <flowbite-block-table
-        :columnNames="productStokeTableSettings.columns"
-        :columnValues="productsBalance"
+        :columnNames="productStokeEditTableSettings.columns"
+        :columnValues="productStockTransaction"
+        @modalFormDetail="modalFormDetail"
     />
 
     <div class="flex items-center">
       <flowbite-block-modal
           v-if="showModal"
           :formSettings="productStockAddFormSettings"
-          :fetchingData="productStoke"
+          :fetchingData="productStock"
           @closeModal="closeModal"
           @addModalForm="addModalForm"
           @emitFormData="emitFormData"
@@ -30,17 +31,7 @@
         <flowbite-ui-button
             @click="addModalForm"
             buttonColor="blue"
-            buttonText="Добавить продукт"
-        />
-        <flowbite-ui-button
-            @click="$router.push('/stock')"
-            buttonColor="green"
-            buttonText="Добавить склад"
-        />
-        <flowbite-ui-button
-            @click="$router.push('/product-in-stock/edit')"
-            buttonColor="blue"
-            buttonText="Редактировать склад"
+            buttonText="Добавить транзакцию"
         />
       </div>
 
@@ -50,7 +41,7 @@
 
 <script setup>
 import {productStockAddFormSettings} from "~/utils/forms";
-import {productStokeTableSettings} from "~/utils/tables";
+import {productStokeEditTableSettings} from "~/utils/tables";
 import {
   itemAlertSettings,
   itemDeleteAlertSettings,
@@ -62,11 +53,19 @@ import {useKitchenStore} from "~/store/kitchenStore";
 const kitchenStore = useKitchenStore();
 
 const {data: productsStock} = await useAsyncData('product-stock', () => kitchenStore.fetchItems('product-in-stock'));
-const {data: productsBalance} = await useAsyncData('product-balance', () => kitchenStore.fetchItems('stock-balance'));
+
+const productStockTransaction = computed(() => {
+  return productsStock.value.map((item) => {
+    if (item.price === null) {
+      item.quantity = -item.quantity;
+      item.price = 'Списание';
+    }
+    return item;
+  });
+});
+
 const {data: store} = await useAsyncData('stock', () => kitchenStore.fetchItems('stock'));
 const {data: products} = await useAsyncData('products', () => kitchenStore.fetchItems('product'));
-const productStockRefresh = () => refreshNuxtData('product-stock');
-const productBalanceRefresh = () => refreshNuxtData('product-balance');
 const searchItems = (search) => {
   console.log(search);
   // productCategories.value = productCategoryStore.getProductCategoryBySearch(search);
@@ -78,7 +77,7 @@ const showModal = ref(false);
 const showAlert = ref(false);
 const formSettings = ref(productStockAddFormSettings);
 
-const productStoke = ref({});
+const productStock = ref({});
 const addFormSelect = () => {
   const productSelectField = {
     title: 'Продукт',
@@ -105,7 +104,7 @@ const addFormSelect = () => {
 }
 
 const addModalForm = () => {
-  productStoke.value = {};
+  productStock.value = {};
   formSettings.value.modalTitle = `Добавить продукт на склад`;
   addFormSelect();
   formSettings.value.addMode = true;
@@ -113,8 +112,6 @@ const addModalForm = () => {
 }
 const closeModal = () => {
   showModal.value = false;
-  productStockRefresh();
-  productBalanceRefresh();
 }
 
 const alerting = (data) => {

@@ -47,7 +47,14 @@ export const productStockAddFormSettings = {
   modalTitle: 'Добавить продукт',
   formFields: [
     {title: 'Количество', type: 'number', name: 'quantity', required: true, method: 'input', step: 1},
-    {title: 'Закупочная цена', type: 'number', name: 'price', required: true, method: 'input', step: 100},
+    {
+      title: 'Закупочная цена (если пусто - списание)',
+      type: 'number',
+      name: 'price',
+      required: false,
+      method: 'input',
+      step: 100
+    },
     {title: 'Описание', type: 'text', name: 'description', required: false, method: 'textarea'},
     // {title: 'Срок годности', type: 'date', name: 'expiration_date', required: false, method: 'input'},
   ],

@@ -3,6 +3,18 @@
 <!--  <flowbite-block-aside/>-->
   <div class="lg:p-12 md:p-2">
     <slot/>
+    <div class="container flex justify-end">
+      <flowbite-ui-button
+          @click="$router.go(-1)"
+          buttonColor="blue"
+          buttonText="<-"
+      />
+      <flowbite-ui-button
+          @click="$router.go(1)"
+          buttonColor="blue"
+          buttonText="->"
+      />
+    </div>
   </div>
 <!--  <flowbite-block-footer/>-->
 </template>

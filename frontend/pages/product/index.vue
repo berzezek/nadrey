@@ -32,20 +32,16 @@
           @emitFormData="emitFormData"
       />
       <div class="flex items-between">
-
-        <button
-            type="button"
+        <flowbite-ui-button
             @click="addModalForm"
-            class="mt-3 ml-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-          Добавить
-        </button>
-
-        <button
-            type="button"
+            buttonColor="blue"
+            buttonText="Добавить"
+        />
+        <flowbite-ui-button
             @click="$router.push('/product-category')"
-            class="mt-3 ml-3 text-white bg-green-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-          Добавить категорию
-        </button>
+            buttonColor="green"
+            buttonText="Добавить категорию"
+        />
       </div>
 
     </div>

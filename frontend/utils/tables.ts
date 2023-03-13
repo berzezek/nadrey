@@ -22,8 +22,17 @@ export const stockTableSettings = {
 
 export const productStokeTableSettings = {
   columns: [
+    {product: 'Наименование'},
+    {quantity: 'Количество на складе'},
+    {unit: 'Единица измерения'},
+    {max_price: 'Максимальная цена'}
+  ]
+}
+export const productStokeEditTableSettings = {
+  columns: [
     {product_name: 'Наименование'},
-    {quantity: 'Количество'},
-    {price: 'Цена'}
+    {quantity: 'Количество на складе'},
+    {product_unit: 'Единица измерения'},
+    {price: 'Цена'},
   ]
 }
