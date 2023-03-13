@@ -82,14 +82,14 @@ class CardViewSet(ModelViewSet):
     serializer_class = CardSerializer
 
 
-# class GroupedProductInStoreViewSet(ModelViewSet):
-#     serializer_class = ProductServiceSerializer
-#     queryset = ProductInStore.objects.all()
-#
-#     def list(self, request, *args, **kwargs):
-#         queryset = self.get_queryset()
-#         serializer = self.get_serializer(queryset, many=True)
-#         return Response(serializer.data)
+class GroupedProductInStoreViewSet(ModelViewSet):
+    queryset = ProductInStore.objects.all()
+    serializer_class = ProductServiceSerializer
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 schema_view = get_schema_view(

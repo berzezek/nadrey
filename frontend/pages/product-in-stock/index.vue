@@ -61,7 +61,6 @@ import {useKitchenStore} from "~/store/kitchenStore";
 const kitchenStore = useKitchenStore();
 
 const {data: productsStock} = await useAsyncData('product-stock', () => kitchenStore.fetchItems('product-in-stock'));
-console.log(productsStock.value);
 const {data: store} = await useAsyncData('stock', () => kitchenStore.fetchItems('stock'));
 const {data: products} = await useAsyncData('products', () => kitchenStore.fetchItems('product'));
 const productStockRefresh = () => refreshNuxtData('product-stock');
@@ -86,7 +85,7 @@ const addFormSelect = () => {
     method: 'select',
     selectValue: products.value,
   }
-  const storeSelectField = {
+  const stockSelectField = {
     title: 'Склад',
     type: 'text',
     name: 'store',
@@ -94,8 +93,10 @@ const addFormSelect = () => {
     method: 'select',
     selectValue: store.value,
   }
-  if (formSettings.value.formFields.length === 2) {
-    formSettings.value.formFields.unshift(storeSelectField)
+  if (!formSettings.value.formFields.some(field => field.title === 'Склад')) {
+    formSettings.value.formFields.unshift(stockSelectField)
+  }
+  if (!formSettings.value.formFields.some(field => field.title === 'Продукт')) {
     formSettings.value.formFields.unshift(productSelectField)
   }
 }
@@ -124,7 +125,8 @@ const alertSettings = ref({});
 
 const emitFormData = async (data, action) => {
   if (action === 'addItem') {
-    // await productStockStore.addProductCategory(data);
+    data.transaction_type = 'in'
+    await kitchenStore.addItem(data, 'product-in-stock');
     closeModal();
     alerting(itemAlertSettings);
   } else if (action === 'updateItem') {

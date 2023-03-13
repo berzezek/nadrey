@@ -62,6 +62,10 @@ const props = defineProps({
     type: Object,
     required: false,
     default: () => {
+      return {
+        formFields: [],
+        addMode: true,
+      }
     },
   },
   fetchingData: {
