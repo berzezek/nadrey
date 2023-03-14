@@ -25,7 +25,8 @@ export const productStockTableSettings = {
     {product: 'Наименование'},
     {quantity: 'Количество на складе'},
     {unit: 'Единица измерения'},
-    {max_price: 'Максимальная цена'}
+    {max_price: 'Максимальная цена'},
+    {average_price: 'Усредненная цена'}
   ]
 }
 export const productStockEditTableSettings = {
@@ -45,12 +46,23 @@ export const recipeCategoryTableSettings = {
 }
 export const recipeTableSettings = {
   columns: [
-    {get_category: 'Категория'},
+    {category: 'Категория'},
     {image: 'Изображение'},
     {name: 'Наименование'},
-    {total_weight: 'Вес продуктов'},
+    {total_product_weight: 'Вес продуктов'},
     {weight: 'Фактический вес'},
-    {total_price: 'Цена продуктов'},
+    {total_average_price: 'Средняя цена *'},
+    {total_max_price: 'Максимальная цена *'},
     {price: 'Фактическая цена'},
+  ]
+}
+export const recipeIngredientsTableSettings = {
+  columns: [
+    {name: 'Наименование'},
+    {quantity: 'Количество'},
+    {unit: 'Ед'},
+    {unit_weight: 'Вес продукта'},
+    {max_price: 'Максимальная цена'},
+    {average_price: 'Средняя цена'},
   ]
 }

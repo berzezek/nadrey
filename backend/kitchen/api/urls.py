@@ -15,7 +15,8 @@ from .views import (
 )
 
 from .services.api_doc import schema_view
-from .services.stock_balance import StockBalanceAPIView
+from .services.stock_services import StockBalanceAPIView
+from .services.recipe_services import RecipeAPIView
 
 router = DefaultRouter()
 router.register('product-category', ProductCategoryViewSet)
@@ -35,6 +36,7 @@ urlpatterns = [
     re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('stock-balance/', StockBalanceAPIView.as_view(), name='stock_balance'),
+    path('recipe-balance/', RecipeAPIView.as_view(), name='recipe_balance'),
 ]
 
 urlpatterns += router.urls

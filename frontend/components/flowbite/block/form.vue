@@ -1,14 +1,6 @@
 <template>
   <form @submit.prevent>
     <div class="relative z-0 w-full mb-6 group" v-for="field in formSettings.formFields" :key="field.name">
-
-<!--      <img-->
-<!--          v-if="field.method==='image'"-->
-<!--          class="rounded-full w-24 h-24"-->
-<!--          :src="field.name"-->
-<!--          :alt="field.name"-->
-<!--      >-->
-
       <input
           :type="field.type"
           :name="field.name"

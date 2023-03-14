@@ -1,11 +1,11 @@
-from django.db.models import F, Sum, Case, When, FloatField, Max, Avg
+from django.db.models import F, Sum, Avg, Case, When, FloatField, Max
 from rest_framework.views import APIView
-from ...models import ProductInStore
 from rest_framework.response import Response
+from ...models import ProductInStore
 
 
 class StockBalanceAPIView(APIView):
-    def get(self, request, format=None):
+    def get(self, request):
         # Получаем остатки продуктов на складе, сгруппированные по продукту и складу
         product_quantities = ProductInStore.objects.values(
             'product__name', 'store__name', 'product__unit', 'transaction_type'
@@ -19,22 +19,25 @@ class StockBalanceAPIView(APIView):
             )
         )
 
-        # Получаем максимальную цену продукта на каждом складе
+        # Получаем среднюю цену последних 3-х покупок
         last_prices = ProductInStore.objects.filter(
             price__isnull=False
-        ).order_by('-id')[:3].values(
-            'product__name', 'store__name'
-        ).annotate(
-            average_price=Avg('price')
-        )
+        ).order_by('-id')[:3]
+
+        average_price = last_prices.aggregate(avg_price=Avg('price'))['avg_price']
+
+        # Получаем максимальную цену
+        max_price = ProductInStore.objects.filter(
+            price__isnull=False
+        ).aggregate(max_price=Max('price'))['max_price']
 
         # Объединяем данные в одну сводную таблицу
         stock_balance = {}
-        for pq in product_quantities:
-            product_name = pq['product__name']
-            store_name = pq['store__name']
-            total_quantity = pq['total_quantity']
-            product_unit = pq['product__unit']
+        for product_quantity in product_quantities:
+            product_name = product_quantity['product__name']
+            store_name = product_quantity['store__name']
+            total_quantity = product_quantity['total_quantity']
+            product_unit = product_quantity['product__unit']
 
             if product_name not in stock_balance:
                 stock_balance[product_name] = {}
@@ -45,14 +48,6 @@ class StockBalanceAPIView(APIView):
                 'unit': product_unit,
             }
 
-        for lp in last_prices:
-            product_name = lp['product__name']
-            store_name = lp['store__name']
-            last_price = lp['last_prices']
-
-            if product_name in stock_balance and store_name in stock_balance[product_name]:
-                stock_balance[product_name][store_name]['last_prices'] = last_price
-
         # Преобразуем данные в нужный формат для вывода
         balance_data = []
         for product_name, stores in stock_balance.items():
@@ -61,8 +56,8 @@ class StockBalanceAPIView(APIView):
                     'product': product_name,
                     'store': store_name,
                     'quantity': data['quantity'],
-                    'last_price': data['last_price'],
+                    'max_price': max_price or 0,
+                    'average_price': average_price or 0,
                     'unit': data['unit'],
                 })
         return Response(balance_data)
-

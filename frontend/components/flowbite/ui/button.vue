@@ -1,7 +1,7 @@
 <template>
   <button
       :type="buttonType"
-      :class=buttonClass
+      :class="buttonClass"
       @click="clickButton"
   >
     {{ buttonText }}
@@ -16,7 +16,7 @@ const props = defineProps({
   },
   buttonColor: {
     type: String,
-    default: 'green',
+    default: 'blue',
   },
   buttonText: {
     type: String,

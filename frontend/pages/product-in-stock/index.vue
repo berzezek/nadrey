@@ -14,13 +14,13 @@
     <div class="flex items-center">
       <flowbite-ui-button
           @click="$router.push('/stock')"
-          buttonColor="green"
-          buttonText="Добавить склад"
+          :buttonColor="'blue'"
+          :buttonText="'Добавить склад'"
       />
       <flowbite-ui-button
           @click="$router.push('/product-in-stock/edit')"
-          buttonColor="blue"
-          buttonText="Редактировать склад"
+          :buttonColor="'blue'"
+          :buttonText="'Добавить продукт на склад'"
       />
     </div>
 

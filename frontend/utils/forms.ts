@@ -88,6 +88,15 @@ export const recipeAddFormSettings = {
   ]
 };
 
+export const ingredientsAddFormSettings = {
+  formAction: 'addItem',
+  buttonText: 'Добавить',
+  modalTitle: 'Добавить ингредиент',
+  formFields: [
+    {title: 'Количество', type: 'number', name: 'quantity', required: true, method: 'input', step: 0.01},
+  ]
+};
+
 export const propsFormSettings = {
   formAction: '',
   buttonText: 'Добавить',

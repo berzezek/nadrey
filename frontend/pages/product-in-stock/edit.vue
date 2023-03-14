@@ -119,6 +119,7 @@ const alertSettings = ref({});
 
 const emitFormData = async (data, action) => {
   if (action === 'addItem') {
+    console.log(data)
     await kitchenStore.addItem(data, 'product-in-stock');
     closeModal();
     alerting(itemAlertSettings);

@@ -30,7 +30,7 @@ class Product(models.Model):
     name = models.CharField(max_length=255, verbose_name='Наименование')
     description = models.TextField(null=True, blank=True, verbose_name='Описание')
     unit = models.CharField(max_length=15, choices=UNIT_CHOICES, default='kg', verbose_name='Единица измерения')
-    weight = models.FloatField(verbose_name='Вес', default=1)
+    weight = models.FloatField(verbose_name='Вес', null=True, blank=True)
     calories = models.IntegerField(null=True, blank=True, verbose_name='Калорийность ккал', default=0)
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, null=True, blank=True,
                                  verbose_name='Категория')
@@ -116,9 +116,8 @@ class Recipe(models.Model):
     description = models.TextField(null=True, blank=True, verbose_name='Описание')
     image = models.ImageField(upload_to='images', default='images/default.png', verbose_name='Изображение')
     products = models.ManyToManyField(Ingredients, verbose_name='Продукты для рецепта')
-    category = models.ForeignKey(CategoryRecipe, on_delete=models.CASCADE, null=True, blank=True,
-                                 verbose_name='Категория')
-    weight = models.FloatField(null=True, blank=True, verbose_name='Вес', default=0)
+    category = models.ForeignKey(CategoryRecipe, on_delete=models.CASCADE, verbose_name='Категория')
+    weight = models.FloatField(null=True, blank=True, verbose_name='Вес')
     price = models.FloatField(null=True, blank=True, verbose_name='Цена', default=0)
 
     def __str__(self):
