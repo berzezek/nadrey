@@ -48,7 +48,7 @@ export const productStockAddFormSettings = {
   formFields: [
     {title: 'Количество', type: 'number', name: 'quantity', required: true, method: 'input', step: 1},
     {
-      title: 'Закупочная цена (если пусто - списание)',
+      title: 'Закупочная цена',
       type: 'number',
       name: 'price',
       required: false,
@@ -56,7 +56,15 @@ export const productStockAddFormSettings = {
       step: 100
     },
     {title: 'Описание', type: 'text', name: 'description', required: false, method: 'textarea'},
-    // {title: 'Срок годности', type: 'date', name: 'expiration_date', required: false, method: 'input'},
+    {
+      title: 'Тип транзакции', type: 'text', name: 'transaction_type', required: false, method: 'select', selectValue: [
+        {name: 'Приход', id: 'in'},
+        {name: 'Расход', id: 'out'},
+        {name: 'Перемещение', id: 'Перемещение'},
+        {name: 'Списание', id: 'write_off'},
+        {name: 'Списание по дате', id: 'data_off'},
+      ]
+    },
   ]
 };
 

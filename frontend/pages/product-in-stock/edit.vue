@@ -14,7 +14,7 @@
     </div>
     <flowbite-block-table
         :columnNames="productStockEditTableSettings.columns"
-        :columnValues="productStockTransaction"
+        :columnValues="productsStock"
         @modalFormDetail="modalFormDetail"
     />
 
@@ -55,16 +55,6 @@ const kitchenStore = useKitchenStore();
 const {data: productsStock} = await useAsyncData('product-stock', () => kitchenStore.fetchItems('product-in-stock'));
 const productsStockRefresh = () => refreshNuxtData('product-stock');
 
-const productStockTransaction = computed(() => {
-  return productsStock.value.map((item) => {
-    if (item.price === null) {
-      item.transaction = 'Списание';
-    } else {
-      item.transaction = 'Приход';
-    }
-    return item;
-  });
-});
 
 const {data: store} = await useAsyncData('stock', () => kitchenStore.fetchItems('stock'));
 const {data: products} = await useAsyncData('products', () => kitchenStore.fetchItems('product'));
@@ -129,7 +119,6 @@ const alertSettings = ref({});
 
 const emitFormData = async (data, action) => {
   if (action === 'addItem') {
-    data.transaction_type = 'in'
     await kitchenStore.addItem(data, 'product-in-stock');
     closeModal();
     alerting(itemAlertSettings);

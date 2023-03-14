@@ -40,7 +40,8 @@ class Product(models.Model):
             return 1
         elif self.unit == 'gr':
             return 0.001
-        else: return self.weight
+        else:
+            return self.weight
 
     def __str__(self):
         return f'{self.name} ({self.unit})'
@@ -59,6 +60,14 @@ class Store(models.Model):
 
 
 class ProductInStore(models.Model):
+    TRANSACTION_TYPE = (
+        ('in', 'Приход'),
+        ('out', 'Расход'),
+        ('move', 'Перемещение'),
+        ('write_off', 'Списание'),
+        ('data_off', 'Списание по дате')
+    )
+
     class Meta:
         verbose_name = 'Продукт на складе'
         verbose_name_plural = 'Продукты на складе'
@@ -70,6 +79,8 @@ class ProductInStore(models.Model):
     quantity = models.FloatField(verbose_name='Количество')
     price = models.FloatField(verbose_name='Закупочная цена', null=True, blank=True)
     store = models.ForeignKey(Store, on_delete=models.CASCADE, verbose_name='Склад', default=1)
+    transaction_type = models.CharField(max_length=15, choices=TRANSACTION_TYPE, default='in',
+                                        verbose_name='Тип операции', null=True, blank=True)
 
     def __str__(self):
         return f'{self.product.name} - {self.quantity}/{self.product.unit}'

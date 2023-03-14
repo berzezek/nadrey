@@ -33,7 +33,7 @@ export const productStockEditTableSettings = {
     {product_name: 'Наименование'},
     {quantity: 'Количество на складе'},
     {product_unit: 'Единица измерения'},
-    {transaction: 'Тип транзакции'},
+    {transaction_type: 'Тип транзакции'},
     {price: 'Цена'},
   ]
 }

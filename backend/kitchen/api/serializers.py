@@ -45,6 +45,7 @@ class ProductInStoreSerializer(ModelSerializer):
             'product_name',
             'product_unit',
             'quantity',
+            'transaction_type',
             'price',
             'expiration_date',
             'description',
