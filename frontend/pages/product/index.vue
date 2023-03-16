@@ -12,14 +12,12 @@
           :searchSelect="'product-category'"
           @changeSelect="changeSelect"
       />
-      <flowbite-block-search
-          @searchItems="searchItems"
-      />
     </div>
     <flowbite-block-table
         :columnNames="productTableSettings.columns"
         :columnValues="products"
         @modalFormDetail="modalFormDetail"
+        @emitFormData="emitFormData"
     />
 
     <div class="flex items-center">
@@ -32,14 +30,14 @@
           @emitFormData="emitFormData"
       />
       <div class="flex items-between">
-        <flowbite-ui-button
-            @click="addModalForm"
-            buttonColor="blue"
-            buttonText="Добавить"
-        />
+<!--        <flowbite-ui-button-->
+<!--            @click="addModalForm"-->
+<!--            :buttonColor="'blue'"-->
+<!--            buttonText="Добавить"-->
+<!--        />-->
         <flowbite-ui-button
             @click="$router.push('/product-category')"
-            buttonColor="blue"
+            :buttonColor="'blue'"
             buttonText="Добавить категорию"
         />
       </div>
@@ -51,13 +49,9 @@
 <script setup>
 import {productAddFormSettings} from "~/utils/forms";
 import {productTableSettings} from "~/utils/tables";
-import {
-  itemAlertSettings,
-  itemDeleteAlertSettings,
-  itemEditAlertSettings,
-} from "~/utils/alerts";
 
 import { useKitchenStore } from "~/store/kitchenStore";
+import {emitFormDataMixin} from "~/mixins/emitFormDataMixin";
 
 const kitchenStore = useKitchenStore();
 
@@ -105,31 +99,18 @@ const closeModal = () => {
   productsRefresh();
 }
 
+const alertSettings = ref({});
 const alerting = (data) => {
   alertSettings.value = data
   showAlert.value = true;
-    setTimeout(() => {
+  setTimeout(() => {
       showAlert.value = false;
     }, 5000)
+
 }
 
-const alertSettings = ref({});
-
-const emitFormData = async (data, action) => {
-  if (action === 'addItem') {
-    await kitchenStore.addItem(data, 'product');
-    closeModal();
-    alerting(itemAlertSettings);
-  } else if (action === 'updateItem') {
-    console.log(data)
-    await kitchenStore.updateItem(data, data.id, 'product');
-    closeModal();
-    alerting(itemEditAlertSettings);
-  } else if (action === 'deleteItem') {
-    await kitchenStore.deleteItem(data, 'product');
-    closeModal();
-    alerting(itemDeleteAlertSettings);
-  }
+const emitFormData = (data, action) => {
+  emitFormDataMixin(data, action, 'product', closeModal, alerting);
 }
 
 const closeAlert = () => {

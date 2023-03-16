@@ -6,12 +6,7 @@
         :alert-settings="alertSettings"
     />
     <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Транзакции продуктов на складе</h1>
-    <div class="md:flex mb-3">
 
-      <flowbite-block-search
-          @searchItems="searchItems"
-      />
-    </div>
     <flowbite-block-table
         :columnNames="productStockEditTableSettings.columns"
         :columnValues="productsStock"
@@ -30,8 +25,8 @@
       <div class="flex items-between">
         <flowbite-ui-button
             @click="addModalForm"
-            buttonColor="blue"
-            buttonText="Добавить транзакцию"
+            :buttonColor="'blue'"
+            :buttonText="'Добавить транзакцию'"
         />
       </div>
 
@@ -49,6 +44,7 @@ import {
 } from "~/utils/alerts";
 
 import {useKitchenStore} from "~/store/kitchenStore";
+import {emitFormDataMixin} from "~/mixins/emitFormDataMixin";
 
 const kitchenStore = useKitchenStore();
 
@@ -117,24 +113,9 @@ const alerting = (data) => {
 
 const alertSettings = ref({});
 
-const emitFormData = async (data, action) => {
-  if (action === 'addItem') {
-    console.log(data)
-    await kitchenStore.addItem(data, 'product-in-stock');
-    closeModal();
-    alerting(itemAlertSettings);
-  } else if (action === 'updateItem') {
-    await kitchenStore.updateItem(data, data.id, 'product-in-stock');
-    closeModal();
-    alerting(itemEditAlertSettings);
-  } else if (action === 'deleteItem') {
-    console.log(data)
-    await kitchenStore.deleteItem(data, 'product-in-stock');
-    closeModal();
-    alerting(itemDeleteAlertSettings);
-  }
+const emitFormData = (data, action) => {
+  emitFormDataMixin(data, action, 'product-in-stock', closeModal, alerting);
 }
-
 
 const closeAlert = () => {
   showAlert.value = false;

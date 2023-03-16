@@ -97,6 +97,20 @@ export const ingredientsAddFormSettings = {
   ]
 };
 
+export const clientAddFormSettings = {
+  formAction: 'addItem',
+  buttonText: 'Добавить',
+  modalTitle: 'Добавить клиента',
+  formFields: [
+    {title: 'Имя', type: 'text', name: 'name', required: true, method: 'input'},
+    {title: 'Описание', type: 'text', name: 'description', required: false, method: 'textarea'},
+    {title: 'Контакты', type: 'text', name: 'phone', required: true, method: 'input'},
+    {title: 'Почта', type: 'email', name: 'email', required: false, method: 'input'},
+    {title: 'Дата рождения', type: 'date', name: 'birthday', required: false, method: 'input'},
+    {title: 'Адрес', type: 'text', name: 'address', required: false, method: 'input'},
+  ]
+};
+
 export const propsFormSettings = {
   formAction: '',
   buttonText: 'Добавить',

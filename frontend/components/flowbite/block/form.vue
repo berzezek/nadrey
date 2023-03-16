@@ -48,7 +48,7 @@
       />
       <flowbite-ui-button
           @click="deleteItem"
-          :button-color="'red'"
+          :button-color="'blue'"
           :button-text="'Удалить'"
           class="md:ml-3"
       />
@@ -86,7 +86,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['emitFormData', 'emitFormData'])
+const emit = defineEmits(['emitFormData'])
 
 const formData = ref(props.fetchingData)
 

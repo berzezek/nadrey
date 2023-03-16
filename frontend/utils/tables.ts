@@ -22,8 +22,8 @@ export const stockTableSettings = {
 
 export const productStockTableSettings = {
   columns: [
-    {product: 'Наименование'},
-    {quantity: 'Количество на складе'},
+    {product__name: 'Наименование'},
+    {product_quantity: 'Количество на складе'},
     {unit: 'Единица измерения'},
     {max_price: 'Максимальная цена'},
     {average_price: 'Усредненная цена'}
@@ -64,5 +64,23 @@ export const recipeIngredientsTableSettings = {
     {unit_weight: 'Вес продукта'},
     {max_price: 'Максимальная цена'},
     {average_price: 'Средняя цена'},
+  ]
+}
+
+export const clientTableSettings = {
+  columns: [
+    {name: 'Наименование'},
+    {phone: 'Телефон'},
+    {email: 'Email'},
+    {address: 'Адрес'},
+    {birthday: 'Дата рождения'},
+    {description: 'Описание'},
+  ]
+}
+
+export const orderTableSettings = {
+  columns: [
+    {card_client: 'Клиент'},
+    {is_paid: 'Оплачен'},
   ]
 }

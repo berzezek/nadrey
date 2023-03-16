@@ -1,4 +1,5 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField, CharField
+from django.db import models
 from django.db.models import Max, Avg
 
 from ..models import (
@@ -90,32 +91,31 @@ class OrderSerializer(ModelSerializer):
 
 
 class CardSerializer(ModelSerializer):
+    card_client = CharField(source='client.name', read_only=True)
 
-    def get_card_price(self, obj):
-        total = 0
-        for order in obj.order.all():
-            for product in order.recipe.products.all():
-                try:
-                    price = ProductInStore.objects.filter(product=product.product_id, price__isnull=False).last().price
-                    ingradient_quantity = Ingredients.objects.get(product=product.product_id).quantity
-                    total += price * ingradient_quantity * order.quantity
-                except ProductInStore.DoesNotExist:
-                    return f'Нет актуальных цен на продукты: {product.product}'
-        return total
-
-    card_price = SerializerMethodField(
-        method_name='get_card_price',
-        read_only=True,
-    )
+    # def get_card_price(self, obj):
+    #     total = 0
+    #     for order in obj.order.all():
+    #         for product in order.recipe.products.all():
+    #             try:
+    #                 price = ProductInStore.objects.filter(product=product.product_id, price__isnull=False).last().price
+    #                 ingradient_quantity = Ingredients.objects.get(product=product.product_id).quantity
+    #                 total += price * ingradient_quantity * order.quantity
+    #             except ProductInStore.DoesNotExist:
+    #                 return f'Нет актуальных цен на продукты: {product.product}'
+    #     return total
+    #
+    # card_price = SerializerMethodField(
+    #     method_name='get_card_price',
+    #     read_only=True,
+    # )
 
     class Meta:
         model = Card
         fields = (
             'id',
-            'date_created',
-            'description',
-            'order',
             'client',
+            'card_client',
+            'order',
             'is_paid',
-            'card_price',
         )

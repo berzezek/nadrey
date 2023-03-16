@@ -6,12 +6,6 @@
         :alert-settings="alertSettings"
     />
     <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Категория продуктов</h1>
-    <div class="md:flex mb-3">
-
-      <flowbite-block-search
-          @searchItems="searchItems"
-      />
-    </div>
     <flowbite-block-table
         :columnNames="productCategoryTableSettings.columns"
         :columnValues="productCategories"
@@ -49,6 +43,7 @@ import {
 } from "~/utils/alerts";
 
 import {useKitchenStore} from "~/store/kitchenStore";
+import {emitFormDataMixin} from "~/mixins/emitFormDataMixin";
 
 const kitchenStore = useKitchenStore();
 
@@ -87,22 +82,9 @@ const alerting = (data) => {
 
 const alertSettings = ref({});
 
-const emitFormData = async (data, action) => {
-  if (action === 'addItem') {
-    await kitchenStore.addItem(data, 'product-category');
-    closeModal();
-    alerting(itemAlertSettings);
-  } else if (action === 'updateItem') {
-    await kitchenStore.updateItem(data, data.id, 'product-category');
-    closeModal();
-    alerting(itemEditAlertSettings);
-  } else if (action === 'deleteItem') {
-    await kitchenStore.deleteItem(data, 'product-category');
-    closeModal();
-    alerting(itemDeleteAlertSettings);
-  }
+const emitFormData = (data, action) => {
+  emitFormDataMixin(data, action, 'product-category', closeModal, alerting);
 }
-
 
 const closeAlert = () => {
   showAlert.value = false;

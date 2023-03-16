@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils.datetime_safe import datetime
 
 
 class ProductCategory(models.Model):
@@ -35,13 +34,13 @@ class Product(models.Model):
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, null=True, blank=True,
                                  verbose_name='Категория')
 
-    def set_weight(self):
-        if self.unit == 'kg':
-            return 1
-        elif self.unit == 'gr':
-            return 0.001
-        else:
-            return self.weight
+    # def set_weight(self):
+    #     if self.unit == 'kg':
+    #         return 1
+    #     elif self.unit == 'gr':
+    #         return 0.001
+    #     else:
+    #         return self.weight
 
     def __str__(self):
         return f'{self.name} ({self.unit})'
@@ -154,7 +153,7 @@ class Card(models.Model):
         verbose_name = 'Корзина'
         verbose_name_plural = 'Корзины'
 
-    date_created = models.DateTimeField(default=datetime.now, verbose_name='Дата создания')
+    date_created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     description = models.TextField(null=True, blank=True, verbose_name='Описание')
     order = models.ManyToManyField(Order, verbose_name='Заказ')
     client = models.ForeignKey(Client, on_delete=models.CASCADE, verbose_name='Клиент')

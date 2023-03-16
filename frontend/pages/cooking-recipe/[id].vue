@@ -39,34 +39,25 @@ const kitchenStore = useKitchenStore();
 const router = useRouter();
 const id = router.currentRoute.value.params.id;
 
-const {data: recipes} = await useAsyncData('recipe', () => kitchenStore.fetchItems('recipe-balance'));
+const {data: recipe} = await useAsyncData('recipe', () => kitchenStore.fetchItems(`recipe-balance?id=${id}`));
+const recipeRefresh = () => refreshNuxtData('recipe');
 const {data: products} = await useAsyncData('products', () => kitchenStore.fetchItems('product'));
-const recipe = recipes.value.find((item) => item.id.toString() === id);
-const recipeIngredients = computed( async () => {
-  return await recipes.value.filter(item => {
-    // Фильтруем только продукты, которые относятся к текущему рецепту
-    return item.id.toString() === id;
-  });
-});
+const {data: ingredients} = await useAsyncData('ingredients', () => kitchenStore.fetchItems('ingredients'));
 
 const heroSettings = {
-  title: recipe.name,
-  subtitle: recipe.description,
-  image: recipe.image,
+  title: recipe.value.name,
+  subtitle: recipe.value.description,
+  image: recipe.value.image,
 
   button: {
     text: 'Изменить',
     link: '#',
     color: 'primary',
   },
-  total_product_weight: recipe.total_product_weight,
-  total_max_price: recipe.total_max_price,
-  total_average_price: recipe.total_average_price,
-  category: recipe.category,
-}
-
-const modalFormDetail = (id) => {
-  console.log(id);
+  total_product_weight: recipe.value.total_product_weight,
+  total_max_price: recipe.value.total_max_price,
+  total_average_price: recipe.value.total_average_price,
+  category: recipe.value.category,
 }
 
 const showModal = ref(false);
@@ -89,9 +80,21 @@ const addIngredientSelectField = () => {
   }
 }
 
+const modalFormDetail = (id) => {
+  ingredient.value = ingredients.value.find(item => item.id === id);
+  console.log(ingredient.value)
+  const product = products.value.find(item => item.id === ingredient.value.id);
+  formSettings.value.modalTitle = `Редактировать ингредиент`;
+  formSettings.value.addMode = false;
+  formSettings.value.buttonText = `Редактировать`;
+  addIngredientSelectField();
+  showModal.value = true;
+}
+
 const addModalForm = () => {
   ingredient.value = {};
   formSettings.value.modalTitle = 'Добавить ингредиент';
+  formSettings.value.addMode = true;
   addIngredientSelectField();
   showModal.value = true;
 }
@@ -100,13 +103,20 @@ const closeModal = () => {
   showModal.value = false;
 }
 
-const emitFormData = async (data) => {
-  const res = await kitchenStore.addItem(data, 'ingredients');
-  const recipeData = await kitchenStore.getItemById(id, 'cooking-recipe');
-  recipeData.products.push(res.id);
-  delete recipeData.image;
-  await kitchenStore.updateItem(recipeData, id, 'cooking-recipe');
-  showModal.value = false;
+const emitFormData = async (data, action) => {
+  if (action === 'addItem') {
+    const res = await kitchenStore.addItem(data, 'ingredients');
+    const recipeData = await kitchenStore.getItemById(id, 'cooking-recipe');
+    recipeData.products.push(res.id);
+    delete recipeData.image;
+    await kitchenStore.updateItem(recipeData, id, 'cooking-recipe');
+    recipeRefresh();
+    showModal.value = false;
+  } else if (action === 'updateItem') {
+    await kitchenStore.updateItem(data, data.id, 'ingredients');
+    recipeRefresh();
+    showModal.value = false;
+  }
 }
 </script>
 

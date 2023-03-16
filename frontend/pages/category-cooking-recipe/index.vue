@@ -6,12 +6,6 @@
         :alert-settings="alertSettings"
     />
     <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Категории рецептов</h1>
-    <div class="md:flex mb-3">
-
-      <flowbite-block-search
-          @searchItems="searchItems"
-      />
-    </div>
     <flowbite-block-table
         :columnNames="recipeCategoryTableSettings.columns"
         :columnValues="receiptsCategory"
@@ -21,7 +15,7 @@
     <div class="flex items-center">
       <flowbite-block-modal
           v-if="showModal"
-          :formSettings="recipeAddFormSettings"
+          :formSettings="recipeCategoryAddFormSettings"
           :fetchingData="recipeCategory"
           @closeModal="closeModal"
           @addModalForm="addModalForm"
@@ -42,13 +36,9 @@
 <script setup>
 import {recipeCategoryAddFormSettings} from "~/utils/forms";
 import {recipeCategoryTableSettings} from "~/utils/tables";
-import {
-  itemAlertSettings,
-  itemDeleteAlertSettings,
-  itemEditAlertSettings,
-} from "~/utils/alerts";
 
 import {useKitchenStore} from "~/store/kitchenStore";
+import {emitFormDataMixin} from "~/mixins/emitFormDataMixin";
 
 const kitchenStore = useKitchenStore();
 
@@ -63,7 +53,7 @@ const showModal = ref(false);
 
 
 const showAlert = ref(false);
-const formSettings = ref(recipeAddFormSettings);
+const formSettings = ref(recipeCategoryAddFormSettings);
 
 const recipeCategory = ref({});
 const addFormSelect = () => {
@@ -72,7 +62,7 @@ const addFormSelect = () => {
 
 const addModalForm = () => {
   recipeCategory.value = {};
-  formSettings.value.modalTitle = `Добавить рецепт`;
+  formSettings.value.modalTitle = `Добавить категорию рецептов`;
   addFormSelect();
   formSettings.value.addMode = true;
   showModal.value = true;
@@ -92,22 +82,9 @@ const alerting = (data) => {
 
 const alertSettings = ref({});
 
-const emitFormData = async (data, action) => {
-  if (action === 'addItem') {
-    await kitchenStore.addItem(data, 'category-cooking-recipe');
-    closeModal();
-    alerting(itemAlertSettings);
-  } else if (action === 'updateItem') {
-    await kitchenStore.updateItem(data, data.id,'category-cooking-recipe');
-    closeModal();
-    alerting(itemEditAlertSettings);
-  } else if (action === 'deleteItem') {
-    await kitchenStore.deleteItem(data, 'category-cooking-recipe');
-    closeModal();
-    alerting(itemDeleteAlertSettings);
-  }
+const emitFormData = (data, action) => {
+  emitFormDataMixin(data, action, 'category-cooking-recipe', closeModal, alerting);
 }
-
 
 const closeAlert = () => {
   showAlert.value = false;

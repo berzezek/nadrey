@@ -5,23 +5,18 @@
         @closeAlert="closeAlert"
         :alert-settings="alertSettings"
     />
-    <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Склады</h1>
-    <div class="md:flex mb-3">
-      <flowbite-block-search
-          @searchItems="searchItems"
-      />
-    </div>
+    <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Клиенты</h1>
     <flowbite-block-table
-        :columnNames="stockTableSettings.columns"
-        :columnValues="stocks"
+        :columnNames="clientTableSettings.columns"
+        :columnValues="clients"
         @modalFormDetail="modalFormDetail"
     />
 
     <div class="flex items-center">
       <flowbite-block-modal
           v-if="showModal"
-          :formSettings="stockAddFormSettings"
-          :fetchingData="stock"
+          :formSettings="clientAddFormSettings"
+          :fetchingData="client"
           @closeModal="closeModal"
           @addModalForm="addModalForm"
           @emitFormData="emitFormData"
@@ -41,76 +36,65 @@
 </template>
 
 <script setup>
-import {stockAddFormSettings} from "~/utils/forms";
-import {stockTableSettings} from "~/utils/tables";
-import {
-  itemAlertSettings,
-  itemDeleteAlertSettings,
-  itemEditAlertSettings,
-} from "~/utils/alerts";
+import {clientAddFormSettings} from "~/utils/forms";
+import {clientTableSettings} from "~/utils/tables";
+import {emitFormDataMixin} from "~/mixins/emitFormDataMixin";
 
-import { useKitchenStore } from "~/store/kitchenStore";
+import {useKitchenStore} from "~/store/kitchenStore";
 
 const kitchenStore = useKitchenStore();
 
-const {data: stocks} = await useLazyAsyncData('stock', () => kitchenStore.fetchItems('stock'));
-
-const stocksRefresh = () => refreshNuxtData('stock')
+const {data: clients} = await useLazyAsyncData('client', () => kitchenStore.fetchItems('client'));
+console.log(clients.value)
+const clientRefresh = () => refreshNuxtData('client')
 
 const searchItems = (search) => {
-  stocks.value = kitchenStore.getItemsBySearch(search, 'name');
+  clients.value = kitchenStore.getItemsBySearch(search, 'name');
 }
 
 const showModal = ref(false);
 const showAlert = ref(false);
 
-const formSettings = ref(stockAddFormSettings);
-const stock = ref({});
+const formSettings = ref(clientAddFormSettings);
+const client = ref({});
 
 const addModalForm = () => {
-  stock.value = {};
-  formSettings.value.modalTitle = `Добавить склад`;
+  client.value = {};
+  formSettings.value.modalTitle = `Добавить клиента`;
   formSettings.value.addMode = true;
   showModal.value = true;
 }
 const closeModal = () => {
   showModal.value = false;
-  stocksRefresh();
+  clientRefresh();
 }
 
 const alerting = (data) => {
   alertSettings.value = data
   showAlert.value = true;
-    setTimeout(() => {
-      showAlert.value = false;
-    }, 5000)
+  setTimeout(() => {
+    showAlert.value = false;
+  }, 5000)
 }
 
 const alertSettings = ref({});
 
-const emitFormData = async (data, action) => {
-  if (action === 'addItem') {
-    await kitchenStore.addItem(data, 'stock');
-    closeModal();
-    alerting(itemAlertSettings);
-  } else if (action === 'updateItem') {
-    console.log(data)
-    await kitchenStore.updateItem(data, data.id, 'stock');
-    closeModal();
-    alerting(itemEditAlertSettings);
-  } else if (action === 'deleteItem') {
-    await kitchenStore.deleteItem(data, 'stock');
-    closeModal();
-    alerting(itemDeleteAlertSettings);
-  }
-}
 
+const emitFormData = (data, action) => {
+  emitFormDataMixin(
+      data,
+      action,
+      'client',
+      closeModal,
+      alerting
+  )
+}
 const closeAlert = () => {
   showAlert.value = false;
 }
 
 const modalFormDetail = (id) => {
-  stock.value = stocks.value.find(stock => stock.id === id);
+  client.value = clients.value.find(client => client.id === id);
   formSettings.value.modalTitle = `Редактировать склад`;
   formSettings.value.addMode = false;
   formSettings.value.buttonText = `Редактировать`;

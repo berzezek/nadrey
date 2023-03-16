@@ -1,11 +1,6 @@
 <template>
   <div class="">
     <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Продукты на складе</h1>
-    <div class="md:flex mb-3">
-      <flowbite-block-search
-          @searchItems="searchItems"
-      />
-    </div>
     <flowbite-block-table
         :columnNames="productStockTableSettings.columns"
         :columnValues="productsBalance"
