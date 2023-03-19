@@ -10,6 +10,7 @@
         :columnNames="productCategoryTableSettings.columns"
         :columnValues="productCategories"
         @modalFormDetail="modalFormDetail"
+        @addModalForm="addModalForm"
     />
 
     <div class="flex items-center">
@@ -18,7 +19,6 @@
           :formSettings="productCategoryAddFormSettings"
           :fetchingData="productCategory"
           @closeModal="closeModal"
-          @addModalForm="addModalForm"
           @emitFormData="emitFormData"
       />
       <div class="flex items-between">

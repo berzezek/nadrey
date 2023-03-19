@@ -17,7 +17,9 @@
         :columnNames="productTableSettings.columns"
         :columnValues="products"
         @modalFormDetail="modalFormDetail"
+        @addModalForm="addModalForm"
         @emitFormData="emitFormData"
+        @search="searchItems"
     />
 
     <div class="flex items-center">
@@ -26,7 +28,6 @@
           :formSettings="productAddFormSettings"
           :fetchingData="product"
           @closeModal="closeModal"
-          @addModalForm="addModalForm"
           @emitFormData="emitFormData"
       />
       <div class="flex items-between">
@@ -63,8 +64,8 @@ const changeSelect = (categoryId) => {
   products.value = kitchenStore.getItemsById(categoryId, 'category');
 }
 
-const searchItems = (search) => {
-  products.value = kitchenStore.getItemsBySearch(search, 'product');
+const searchItems = (searchText) => {
+  products.value = kitchenStore.getItemsBySearch(searchText, 'name');
 }
 
 const showModal = ref(false);

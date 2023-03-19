@@ -3,6 +3,7 @@
   <flowbite-block-table
       :columnNames="orderTableSettings.columns"
       :columnValues="cards"
+      @addModalForm="addModalForm"
       @modalFormDetail="modalFormDetail"
   />
 </template>
@@ -14,9 +15,12 @@ import {useKitchenStore} from "~/store/kitchenStore";
 const kitchenStore = useKitchenStore();
 const {data: cards} = await useAsyncData('cards', () => kitchenStore.fetchItems('card'));
 
-console.log('orders', cards.value)
 const modalFormDetail = (id) => {
   console.log('modalFormDetail', id)
+}
+
+const addModalForm = () => {
+  console.log('addModalForm')
 }
 
 </script>
