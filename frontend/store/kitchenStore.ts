@@ -27,7 +27,7 @@ export const useKitchenStore = defineStore('kitchen', {
     async fetchItems(url: string) {
       this.isFetching = true
       try {
-        const response = await fetch(`${BASE_API_URL}${url}/`)
+        const response = await fetch(`${BASE_API_URL}${url}`)
         this.items = await response.json();
         return this.items
       } catch (error) {
@@ -36,7 +36,7 @@ export const useKitchenStore = defineStore('kitchen', {
         this.isFetching = false
       }
     },
-    async getItemById(url: string, id: number) {
+    async getItemById(id: number, url: string) {
       this.isFetching = true;
       try {
         const response = await fetch(`${BASE_API_URL}${url}/${id}/`)

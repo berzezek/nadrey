@@ -12,14 +12,16 @@
           :searchSelect="'product-category'"
           @changeSelect="changeSelect"
       />
-      <flowbite-block-search
-          @searchItems="searchItems"
-      />
     </div>
     <flowbite-block-table
         :columnNames="productTableSettings.columns"
         :columnValues="products"
+        :new-button="{color: 'blue', text: 'Добавить категорию'}"
         @modalFormDetail="modalFormDetail"
+        @addModalForm="addModalForm"
+        @emitFormData="emitFormData"
+        @search="searchItems"
+        @new-button-click="$router.push('/product-category')"
     />
 
     <div class="flex items-center">
@@ -28,21 +30,8 @@
           :formSettings="productAddFormSettings"
           :fetchingData="product"
           @closeModal="closeModal"
-          @addModalForm="addModalForm"
           @emitFormData="emitFormData"
       />
-      <div class="flex items-between">
-        <flowbite-ui-button
-            @click="addModalForm"
-            buttonColor="blue"
-            buttonText="Добавить"
-        />
-        <flowbite-ui-button
-            @click="$router.push('/product-category')"
-            buttonColor="blue"
-            buttonText="Добавить категорию"
-        />
-      </div>
 
     </div>
   </div>
@@ -51,15 +40,13 @@
 <script setup>
 import {productAddFormSettings} from "~/utils/forms";
 import {productTableSettings} from "~/utils/tables";
-import {
-  itemAlertSettings,
-  itemDeleteAlertSettings,
-  itemEditAlertSettings,
-} from "~/utils/alerts";
 
 import { useKitchenStore } from "~/store/kitchenStore";
+import {emitFormDataMixin} from "~/mixins/emitFormDataMixin";
 
 const kitchenStore = useKitchenStore();
+
+const router = useRouter();
 
 const {data: products} = await useLazyAsyncData('product', () => kitchenStore.fetchItems('product'));
 const {data: productCategories} = await useLazyAsyncData('product-category', () => kitchenStore.fetchItems('product-category'));
@@ -69,8 +56,8 @@ const changeSelect = (categoryId) => {
   products.value = kitchenStore.getItemsById(categoryId, 'category');
 }
 
-const searchItems = (search) => {
-  products.value = kitchenStore.getItemsBySearch(search, 'product');
+const searchItems = (searchText) => {
+  products.value = kitchenStore.getItemsBySearch(searchText, 'name');
 }
 
 const showModal = ref(false);
@@ -105,31 +92,18 @@ const closeModal = () => {
   productsRefresh();
 }
 
+const alertSettings = ref({});
 const alerting = (data) => {
   alertSettings.value = data
   showAlert.value = true;
-    setTimeout(() => {
+  setTimeout(() => {
       showAlert.value = false;
     }, 5000)
+
 }
 
-const alertSettings = ref({});
-
-const emitFormData = async (data, action) => {
-  if (action === 'addItem') {
-    await kitchenStore.addItem(data, 'product');
-    closeModal();
-    alerting(itemAlertSettings);
-  } else if (action === 'updateItem') {
-    console.log(data)
-    await kitchenStore.updateItem(data, data.id, 'product');
-    closeModal();
-    alerting(itemEditAlertSettings);
-  } else if (action === 'deleteItem') {
-    await kitchenStore.deleteItem(data, 'product');
-    closeModal();
-    alerting(itemDeleteAlertSettings);
-  }
+const emitFormData = (data, action) => {
+  emitFormDataMixin(data, action, 'product', closeModal, alerting);
 }
 
 const closeAlert = () => {
@@ -144,6 +118,7 @@ const modalFormDetail = (id) => {
   addProductCategorySelect();
   showModal.value = true;
 }
+
 
 </script>
 

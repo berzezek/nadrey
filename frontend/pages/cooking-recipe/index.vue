@@ -6,12 +6,6 @@
         :alert-settings="alertSettings"
     />
     <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Рецепты</h1>
-    <div class="md:flex mb-3">
-
-      <flowbite-block-search
-          @searchItems="searchItems"
-      />
-    </div>
     <flowbite-block-table
         :columnNames="recipeTableSettings.columns"
         :columnValues="receipts"
@@ -59,7 +53,7 @@ const router = useRouter();
 
 const kitchenStore = useKitchenStore();
 
-const {data: receipts} = await useAsyncData('recipe', () => kitchenStore.fetchItems('cooking-recipe'));
+const {data: receipts} = await useAsyncData('recipe', () => kitchenStore.fetchItems('recipe-balance'));
 const recipeRefresh = () => refreshNuxtData('recipe');
 const searchItems = (search) => {
   console.log(search);
@@ -73,6 +67,7 @@ const showAlert = ref(false);
 const formSettings = ref(recipeAddFormSettings);
 
 const recipe = ref({});
+
 
 const addModalForm = () => {
   recipe.value = {};
@@ -117,7 +112,6 @@ const closeAlert = () => {
 
 }
 const modalFormDetail = (id) => {
-
   router.push(`/cooking-recipe/${id}`);
 }
 

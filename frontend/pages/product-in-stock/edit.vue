@@ -6,16 +6,12 @@
         :alert-settings="alertSettings"
     />
     <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Транзакции продуктов на складе</h1>
-    <div class="md:flex mb-3">
 
-      <flowbite-block-search
-          @searchItems="searchItems"
-      />
-    </div>
     <flowbite-block-table
         :columnNames="productStockEditTableSettings.columns"
-        :columnValues="productStockTransaction"
+        :columnValues="productsStock"
         @modalFormDetail="modalFormDetail"
+        @addModalForm="addModalForm"
     />
 
     <div class="flex items-center">
@@ -27,13 +23,6 @@
           @addModalForm="addModalForm"
           @emitFormData="emitFormData"
       />
-      <div class="flex items-between">
-        <flowbite-ui-button
-            @click="addModalForm"
-            buttonColor="blue"
-            buttonText="Добавить транзакцию"
-        />
-      </div>
 
     </div>
   </div>
@@ -49,22 +38,13 @@ import {
 } from "~/utils/alerts";
 
 import {useKitchenStore} from "~/store/kitchenStore";
+import {emitFormDataMixin} from "~/mixins/emitFormDataMixin";
 
 const kitchenStore = useKitchenStore();
 
 const {data: productsStock} = await useAsyncData('product-stock', () => kitchenStore.fetchItems('product-in-stock'));
 const productsStockRefresh = () => refreshNuxtData('product-stock');
 
-const productStockTransaction = computed(() => {
-  return productsStock.value.map((item) => {
-    if (item.price === null) {
-      item.transaction = 'Списание';
-    } else {
-      item.transaction = 'Приход';
-    }
-    return item;
-  });
-});
 
 const {data: store} = await useAsyncData('stock', () => kitchenStore.fetchItems('stock'));
 const {data: products} = await useAsyncData('products', () => kitchenStore.fetchItems('product'));
@@ -127,24 +107,9 @@ const alerting = (data) => {
 
 const alertSettings = ref({});
 
-const emitFormData = async (data, action) => {
-  if (action === 'addItem') {
-    data.transaction_type = 'in'
-    await kitchenStore.addItem(data, 'product-in-stock');
-    closeModal();
-    alerting(itemAlertSettings);
-  } else if (action === 'updateItem') {
-    await kitchenStore.updateItem(data, data.id, 'product-in-stock');
-    closeModal();
-    alerting(itemEditAlertSettings);
-  } else if (action === 'deleteItem') {
-    console.log(data)
-    await kitchenStore.deleteItem(data, 'product-in-stock');
-    closeModal();
-    alerting(itemDeleteAlertSettings);
-  }
+const emitFormData = (data, action) => {
+  emitFormDataMixin(data, action, 'product-in-stock', closeModal, alerting);
 }
-
 
 const closeAlert = () => {
   showAlert.value = false;

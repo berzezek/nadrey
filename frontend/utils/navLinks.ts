@@ -3,4 +3,5 @@ export const NavLinks = [
   {title: 'Продукты', path: '/product'},
   {title: 'Склад', path: '/product-in-stock'},
   {title: 'Рецепты', path: '/cooking-recipe'},
+  {title: 'Клиенты', path: '/customer'},
 ]
