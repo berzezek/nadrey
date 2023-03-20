@@ -11,6 +11,7 @@
         :columnNames="productStockEditTableSettings.columns"
         :columnValues="productsStock"
         @modalFormDetail="modalFormDetail"
+        @addModalForm="addModalForm"
     />
 
     <div class="flex items-center">
@@ -22,13 +23,6 @@
           @addModalForm="addModalForm"
           @emitFormData="emitFormData"
       />
-      <div class="flex items-between">
-        <flowbite-ui-button
-            @click="addModalForm"
-            :buttonColor="'blue'"
-            :buttonText="'Добавить транзакцию'"
-        />
-      </div>
 
     </div>
   </div>

@@ -16,10 +16,12 @@
     <flowbite-block-table
         :columnNames="productTableSettings.columns"
         :columnValues="products"
+        :new-button="{color: 'blue', text: 'Добавить категорию'}"
         @modalFormDetail="modalFormDetail"
         @addModalForm="addModalForm"
         @emitFormData="emitFormData"
         @search="searchItems"
+        @new-button-click="$router.push('/product-category')"
     />
 
     <div class="flex items-center">
@@ -30,18 +32,6 @@
           @closeModal="closeModal"
           @emitFormData="emitFormData"
       />
-      <div class="flex items-between">
-<!--        <flowbite-ui-button-->
-<!--            @click="addModalForm"-->
-<!--            :buttonColor="'blue'"-->
-<!--            buttonText="Добавить"-->
-<!--        />-->
-        <flowbite-ui-button
-            @click="$router.push('/product-category')"
-            :buttonColor="'blue'"
-            buttonText="Добавить категорию"
-        />
-      </div>
 
     </div>
   </div>
@@ -55,6 +45,8 @@ import { useKitchenStore } from "~/store/kitchenStore";
 import {emitFormDataMixin} from "~/mixins/emitFormDataMixin";
 
 const kitchenStore = useKitchenStore();
+
+const router = useRouter();
 
 const {data: products} = await useLazyAsyncData('product', () => kitchenStore.fetchItems('product'));
 const {data: productCategories} = await useLazyAsyncData('product-category', () => kitchenStore.fetchItems('product-category'));
@@ -126,6 +118,7 @@ const modalFormDetail = (id) => {
   addProductCategorySelect();
   showModal.value = true;
 }
+
 
 </script>
 

@@ -4,20 +4,11 @@
     <flowbite-block-table
         :columnNames="productStockTableSettings.columns"
         :columnValues="productsBalance"
+        :newButton="{text: 'Добавить продукт на склад', color: 'blue'}"
+        @new-button-click="$router.push('/product-in-stock/edit')"
+        @addModalForm="$router.push('/stock')"
     />
 
-    <div class="flex items-center">
-      <flowbite-ui-button
-          @click="$router.push('/stock')"
-          :buttonColor="'blue'"
-          :buttonText="'Добавить склад'"
-      />
-      <flowbite-ui-button
-          @click="$router.push('/product-in-stock/edit')"
-          :buttonColor="'blue'"
-          :buttonText="'Добавить продукт на склад'"
-      />
-    </div>
 
   </div>
 </template>

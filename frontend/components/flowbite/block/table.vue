@@ -10,9 +10,15 @@
       <div
           class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
         <flowbite-ui-button
-            @click="addItem"
+            @click="addModalForm"
             :button-color="'blue'"
             :button-text="'Добавить'"
+        />
+        <flowbite-ui-button
+            v-if="newButton"
+            @click="newButtonClick"
+            :button-color="newButton.color"
+            :button-text="newButton.text"
         />
         <div class="flex items-center space-x-3 w-full md:w-auto">
           <flowbite-ui-filter/>
@@ -58,12 +64,14 @@
             <span v-else>{{ colValue[Object.keys(colName)[0]] }}</span>
           </td>
           <td class="px-4 py-3 flex items-center justify-end">
-            <div class="dropdown">
-              <button @click="toggleDropdown(index)">{{ selectedOption[index] }}</button>
-              <ul v-if="isOpen[index]" class="dropdown-menu">
-                <li v-for="(option, index) in options" :key="index" @click="selectOption(index)">{{ option }}</li>
-              </ul>
-            </div>
+            <span @click="modalFormDetail(colValue.id)">+</span>
+            <span @click="deleteItem(colValue.id)" class="ml-6">-</span>
+<!--            <div class="dropdown">-->
+<!--              <button @click="toggleDropdown(index)">{{ selectedOption[index] }}</button>-->
+<!--              <ul v-if="isOpen[index]" class="dropdown-menu">-->
+<!--                <li v-for="(option, index) in options" :key="index" @click="selectOption(index)">{{ option }}</li>-->
+<!--              </ul>-->
+<!--            </div>-->
           </td>
         </tr>
         </tbody>
@@ -92,17 +100,14 @@ const props = defineProps({
     required: false,
     default: () => [],
   },
+  newButton: {
+    type: Array,
+    required: false,
+    default: () => {},
+  },
 })
 
-const isOpen = ref(props.columnValues.map(() => false))
-const selectedOption = ref(props.columnValues.map(() => 'Выберите опцию'))
-const options = ref(['Показать', 'Редактировать', 'Удалить'])
-
-function toggleDropdown(index) {
-  isOpen.value[index] = !isOpen.value[index]
-}
-
-const emit = defineEmits(['emitFormData', 'modalFormDetail'])
+const emit = defineEmits(['emitFormData', 'modalFormDetail', 'addModalForm', 'newButtonClick'])
 
 const formData = ref(props.fetchingData)
 
@@ -110,36 +115,23 @@ const modalFormDetail = (id) => {
   emit('modalFormDetail', id)
 }
 
-const addItem = () => {
-  // console.log('addItem')
-  // emit('emitFormData', formData.value, 'addItem')
+const addModalForm = () => {
+  emit('addModalForm')
 }
 
-const updateItem = () => {
-  emit('emitFormData', formData.value, 'updateItem')
+const newButtonClick = () => {
+  emit('newButtonClick')
 }
 
-const deleteItem = () => {
-  emit('emitFormData', props.fetchingData.id, 'deleteItem')
+const deleteItem = (id) => {
+  console.log('deleteItem')
+  emit('emitFormData', id, 'deleteItem')
 }
 const showItem = () => {
   console.log('showItem')
   // emit('emitFormData', props.fetchingData.id, 'showItem')
 }
 
-const selectOption = (index) => {
-  if (options.value[index] === 'Показать') {
-    console.log('showItem')
-    // showItem()
-  } else if (options.value[index] === 'Редактировать') {
-    console.log('updateItem')
-    // modalFormDetail(props.fetchingData.id)
-  } else if (options.value[index] === 'Удалить') {
-    console.log('deleteItem')
-    // deleteItem()
-  }
-  isOpen.value = false
-}
 </script>
 
 <style scoped>
