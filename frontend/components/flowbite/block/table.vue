@@ -5,7 +5,9 @@
   <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
     <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
       <div class="w-full md:w-1/2">
-        <flowbite-ui-search/>
+        <flowbite-ui-search
+            @search="search"
+        />
       </div>
       <div
           class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
@@ -21,7 +23,10 @@
             :button-text="newButton.text"
         />
         <div class="flex items-center space-x-3 w-full md:w-auto">
-          <flowbite-ui-filter/>
+          <flowbite-ui-filter
+              :filters="filters"
+              @filter="filter"
+          />
         </div>
       </div>
     </div>
@@ -36,21 +41,22 @@
               :key="colName"
           >{{ Object.values(colName)[0] }}
           </th>
-          <th scope="col" class="px-4 py-3">
-            <span class="sr-only">Actions</span>
-          </th>
         </tr>
         </thead>
         <tbody>
         <tr
             v-for="(colValue, index) in columnValues" :key="colValue.id"
+            @click="modalFormDetail(colValue.id)"
             class="border-b dark:border-gray-700">
           <th scope="row" class="px-2 text-center py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
             {{ index + 1 }}
           </th>
           <td class="px-4 py-3 " v-for="colName in columnNames" :key="colName">
-            <img v-if="Object.keys(colName) == 'image'" class="rounded-full w-12 h-12"
-                 :src="colValue[Object.keys(colName)[0]]" :alt="colValue.name">
+            <div v-if="Object.keys(colName) == 'image'">
+
+              <img class="rounded-full w-12 h-12"
+                   :src="colValue[Object.keys(colName)[0]]" :alt="colValue.name">
+            </div>
             <div
                 v-if="typeof colValue[Object.keys(colName)[0]] == 'boolean'"
                 class="flex items-center mb-4">
@@ -61,17 +67,10 @@
                      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
 
             </div>
-            <span v-else>{{ colValue[Object.keys(colName)[0]] }}</span>
-          </td>
-          <td class="px-4 py-3 flex items-center justify-end">
-            <span @click="modalFormDetail(colValue.id)">+</span>
-            <span @click="deleteItem(colValue.id)" class="ml-6">-</span>
-<!--            <div class="dropdown">-->
-<!--              <button @click="toggleDropdown(index)">{{ selectedOption[index] }}</button>-->
-<!--              <ul v-if="isOpen[index]" class="dropdown-menu">-->
-<!--                <li v-for="(option, index) in options" :key="index" @click="selectOption(index)">{{ option }}</li>-->
-<!--              </ul>-->
-<!--            </div>-->
+            <div v-else>
+
+              <span>{{ colValue[Object.keys(colName)[0]] }}</span>
+            </div>
           </td>
         </tr>
         </tbody>
@@ -101,15 +100,25 @@ const props = defineProps({
     default: () => [],
   },
   newButton: {
-    type: Array,
+    type: Object,
     required: false,
-    default: () => {},
+    default: () => {
+    },
+  },
+  filters: {
+    type: Array,
+    default: () => [],
   },
 })
 
-const emit = defineEmits(['emitFormData', 'modalFormDetail', 'addModalForm', 'newButtonClick'])
-
-const formData = ref(props.fetchingData)
+const emit = defineEmits([
+  'emitFormData',
+  'modalFormDetail',
+  'addModalForm',
+  'newButtonClick',
+  'search',
+  'filter'
+])
 
 const modalFormDetail = (id) => {
   emit('modalFormDetail', id)
@@ -124,12 +133,19 @@ const newButtonClick = () => {
 }
 
 const deleteItem = (id) => {
-  console.log('deleteItem')
   emit('emitFormData', id, 'deleteItem')
 }
 const showItem = () => {
   console.log('showItem')
   // emit('emitFormData', props.fetchingData.id, 'showItem')
+}
+
+const search = (searchText) => {
+  emit('search', searchText)
+}
+
+const filter = (filter) => {
+  emit('filter', filter)
 }
 
 </script>

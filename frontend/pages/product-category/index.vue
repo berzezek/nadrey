@@ -11,6 +11,8 @@
         :columnValues="productCategories"
         @modalFormDetail="modalFormDetail"
         @addModalForm="addModalForm"
+        @emitFormData="emitFormData"
+        @search="searchItems"
     />
 
     <div class="flex items-center">
@@ -44,7 +46,7 @@ const kitchenStore = useKitchenStore();
 const {data: productCategories} = await useAsyncData('product-category', () => kitchenStore.fetchItems('product-category'));
 const productCategoryRefresh = () => refreshNuxtData('product-category')
 const searchItems = (search) => {
-  productCategories.value = kitchenStore.getItemsBySearch(search, 'category');
+  productCategories.value = kitchenStore.getItemsBySearch(search, 'name');
 }
 
 

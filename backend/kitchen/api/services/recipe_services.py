@@ -30,10 +30,10 @@ def update_serialize_data(data):
             max_price = balanced_product[0]['max_last_3_prices']
 
             if average_price != 'Нет цены':
-                average_price = average_price * unit_weight
+                average_price = average_price * unit_weight * ingredient.quantity
 
             if max_price != 'Нет цены':
-                max_price = max_price * unit_weight
+                max_price = max_price * unit_weight * ingredient.quantity
 
             products.append({
                 'id': pk,
@@ -41,8 +41,8 @@ def update_serialize_data(data):
                 'quantity': ingredient.quantity,
                 'unit': ingredient.product.unit,
                 'unit_weight': unit_weight,
-                'average_price': average_price,
-                'max_price': max_price,
+                'average_price': round(average_price, 0),
+                'max_price': round(max_price, 0),
             })
             total_product_weight += unit_weight if unit_weight != 'Нет цены' else 0
             total_max_price += max_price if max_price != 'Нет цены' else 0
@@ -54,7 +54,8 @@ def update_serialize_data(data):
         'total_max_price': round(total_max_price, 2),
         'total_average_price': round(total_average_price / 3, 2),
         'category': category.name or 'Без категории',
-        'products': products
+        'products': products,
+        'price': data['price'],
     }
 
 

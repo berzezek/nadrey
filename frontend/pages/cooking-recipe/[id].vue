@@ -8,6 +8,8 @@
         :columnNames="recipeIngredientsTableSettings.columns"
         :columnValues="recipe.products"
         @modalFormDetail="modalFormDetail"
+        @addModalForm="addModalForm"
+        @search="searchItems"
     />
     <div class="flex items-center">
       <flowbite-block-modal
@@ -15,16 +17,8 @@
           :formSettings="ingredientsAddFormSettings"
           :fetchingData="ingredient"
           @closeModal="closeModal"
-          @addModalForm="addModalForm"
           @emitFormData="emitFormData"
       />
-      <div class="flex items-between">
-        <flowbite-ui-button
-            @click="addModalForm"
-            buttonColor="blue"
-            buttonText="Добавить ингредиент"
-        />
-      </div>
     </div>
   </div>
 
@@ -44,9 +38,16 @@ const recipeRefresh = () => refreshNuxtData('recipe');
 const {data: products} = await useAsyncData('products', () => kitchenStore.fetchItems('product'));
 const {data: ingredients} = await useAsyncData('ingredients', () => kitchenStore.fetchItems('ingredients'));
 
-const heroSettings = {
+const searchItems = async (searchText) => {
+  if (!searchText) {
+    recipeRefresh();
+  } else {
+    recipe.value.products = recipe.value.products.filter(item => item.name.toLowerCase().includes(searchText.toLowerCase()))
+  }
+}
+
+const heroSettings = ref({
   title: recipe.value.name,
-  subtitle: recipe.value.description,
   image: recipe.value.image,
 
   button: {
@@ -54,11 +55,15 @@ const heroSettings = {
     link: '#',
     color: 'primary',
   },
-  total_product_weight: recipe.value.total_product_weight,
-  total_max_price: recipe.value.total_max_price,
-  total_average_price: recipe.value.total_average_price,
-  category: recipe.value.category,
-}
+  options: [
+    { title: "Категория", value: recipe.value.category },
+    { title: "Цена", value: recipe.value.price ? recipe.value.price : 'Не указана' },
+    { title: "Средняя цена", value: recipe.value.total_average_price },
+    { title: "Максимальная цена", value: recipe.value.total_max_price },
+    { title: "Общий вес продуктов", value: recipe.value.total_product_weight },
+    { title: "Рецепт", value: recipe.value.description ? recipe.value.description : 'В строжайшем секрете' },
+  ],
+})
 
 const showModal = ref(false);
 

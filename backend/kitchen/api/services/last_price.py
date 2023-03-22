@@ -4,6 +4,7 @@ from ...models import ProductInStore
 
 def get_max_average_price():
     last_three_records = ProductInStore.objects.filter(
+        price__isnull=False,
         product=OuterRef('product'),
     ).order_by('-id')[:3]
 

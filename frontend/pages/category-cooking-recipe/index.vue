@@ -10,6 +10,8 @@
         :columnNames="recipeCategoryTableSettings.columns"
         :columnValues="receiptsCategory"
         @modalFormDetail="modalFormDetail"
+        @addModalForm="addModalForm"
+        @emitFormData="emitFormData"
     />
 
     <div class="flex items-center">
@@ -18,7 +20,6 @@
           :formSettings="recipeCategoryAddFormSettings"
           :fetchingData="recipeCategory"
           @closeModal="closeModal"
-          @addModalForm="addModalForm"
           @emitFormData="emitFormData"
       />
       <div class="flex items-between">

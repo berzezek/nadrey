@@ -11,6 +11,7 @@
         :columnValues="stocks"
         @modalFormDetail="modalFormDetail"
         @addModalForm="addModalForm"
+        @search="searchItems"
     />
 
     <div class="flex items-center">
@@ -44,6 +45,7 @@ const {data: stocks} = await useLazyAsyncData('stock', () => kitchenStore.fetchI
 const stocksRefresh = () => refreshNuxtData('stock')
 
 const searchItems = (search) => {
+  console.log(search)
   stocks.value = kitchenStore.getItemsBySearch(search, 'name');
 }
 

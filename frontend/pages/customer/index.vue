@@ -36,7 +36,6 @@ import {useKitchenStore} from "~/store/kitchenStore";
 const kitchenStore = useKitchenStore();
 
 const {data: clients} = await useLazyAsyncData('client', () => kitchenStore.fetchItems('client'));
-console.log(clients.value)
 const clientRefresh = () => refreshNuxtData('client')
 
 const searchItems = (search) => {

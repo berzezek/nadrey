@@ -113,8 +113,9 @@ class Recipe(models.Model):
 
     name = models.CharField(max_length=255, verbose_name='Наименование', unique=True)
     description = models.TextField(null=True, blank=True, verbose_name='Описание')
-    image = models.ImageField(upload_to='images', default='images/default.png', verbose_name='Изображение')
-    products = models.ManyToManyField(Ingredients, verbose_name='Продукты для рецепта')
+    image = models.ImageField(upload_to='images', default='images/default.png', verbose_name='Изображение', null=True,
+                              blank=True)
+    products = models.ManyToManyField(Ingredients, verbose_name='Продукты для рецепта', blank=True)
     category = models.ForeignKey(CategoryRecipe, on_delete=models.CASCADE, verbose_name='Категория')
     weight = models.FloatField(null=True, blank=True, verbose_name='Вес')
     price = models.FloatField(null=True, blank=True, verbose_name='Цена', default=0)
@@ -155,9 +156,9 @@ class Card(models.Model):
 
     date_created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     description = models.TextField(null=True, blank=True, verbose_name='Описание')
-    order = models.ManyToManyField(Order, verbose_name='Заказ')
+    order = models.ManyToManyField(Order, verbose_name='Заказ', blank=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, verbose_name='Клиент')
     is_paid = models.BooleanField(default=False, verbose_name='Оплачен')
 
     def __str__(self):
-        return self.name
+        return f'{self.client.name} - {self.date_created}'

@@ -7,6 +7,7 @@
         :newButton="{text: 'Добавить продукт на склад', color: 'blue'}"
         @new-button-click="$router.push('/product-in-stock/edit')"
         @addModalForm="$router.push('/stock')"
+        @search="searchItems"
     />
 
 
@@ -22,8 +23,7 @@ const kitchenStore = useKitchenStore();
 
 const {data: productsBalance} = await useAsyncData('product-balance', () => kitchenStore.fetchItems('stock-balance'));
 const searchItems = (search) => {
-  console.log(search);
-  // productCategories.value = productCategoryStore.getProductCategoryBySearch(search);
+  productsBalance.value = kitchenStore.getItemsBySearch(search, 'product__name');
 }
 
 

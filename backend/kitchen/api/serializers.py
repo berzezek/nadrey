@@ -85,13 +85,29 @@ class ClientSerializer(ModelSerializer):
 
 
 class OrderSerializer(ModelSerializer):
+    recipe_name = CharField(source='recipe.name', read_only=True)
+
     class Meta:
         model = Order
-        fields = '__all__'
+        fields = (
+            'id',
+            'recipe',
+            'recipe_name',
+            'quantity',
+        )
 
 
 class CardSerializer(ModelSerializer):
+    def get_order(self, obj):
+        orders = Order.objects.filter(card=obj.id)
+        return OrderSerializer(orders, many=True).data
+
     card_client = CharField(source='client.name', read_only=True)
+    get_orders = SerializerMethodField(
+        method_name='get_order',
+        read_only=True,
+    )
+    # order = OrderSerializer(many=True, read_only=True)
 
     # def get_card_price(self, obj):
     #     total = 0
@@ -117,5 +133,7 @@ class CardSerializer(ModelSerializer):
             'client',
             'card_client',
             'order',
+            'get_orders',
             'is_paid',
+            'date_created',
         )

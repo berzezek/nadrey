@@ -29,6 +29,7 @@ export const productStockTableSettings = {
     {average_price: 'Усредненная цена'}
   ]
 }
+
 export const productStockEditTableSettings = {
   columns: [
     {product_name: 'Наименование'},
@@ -38,6 +39,7 @@ export const productStockEditTableSettings = {
     {price: 'Цена'},
   ]
 }
+
 export const recipeCategoryTableSettings = {
   columns: [
     {name: 'Наименование'},
@@ -47,7 +49,7 @@ export const recipeCategoryTableSettings = {
 export const recipeTableSettings = {
   columns: [
     {category: 'Категория'},
-    {image: 'Изображение'},
+    // {image: 'Изображение'},
     {name: 'Наименование'},
     {total_product_weight: 'Вес продуктов'},
     {weight: 'Фактический вес'},
@@ -79,6 +81,15 @@ export const clientTableSettings = {
 }
 
 export const orderTableSettings = {
+  columns: [
+    {recipe_name: 'Рецепт'},
+    {description: 'Описание'},
+    {quantity: 'Количество'},
+    {is_completed: 'Готов'}
+  ]
+}
+
+export const cardTableSettings = {
   columns: [
     {card_client: 'Клиент'},
     {is_paid: 'Оплачен'},

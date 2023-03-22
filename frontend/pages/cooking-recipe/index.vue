@@ -9,37 +9,28 @@
     <flowbite-block-table
         :columnNames="recipeTableSettings.columns"
         :columnValues="receipts"
+        :new-button="{text: 'Добавить категорию рецептов', color: 'blue'}"
         @modalFormDetail="modalFormDetail"
+        @addModalForm="addModalForm"
+        @newButtonClick="$router.push('/category-cooking-recipe')"
+        @emitFormData="emitFormData"
     />
 
     <div class="flex items-center">
       <flowbite-block-modal
           v-if="showModal"
-          :formSettings="recipeAddFormSettings"
+          :formSettings="recipeIngredientAddFormSettings"
           :fetchingData="recipe"
           @closeModal="closeModal"
-          @addModalForm="addModalForm"
           @emitFormData="emitFormData"
       />
-      <div class="flex items-between">
-        <flowbite-ui-button
-            @click="addModalForm"
-            buttonColor="blue"
-            buttonText="Добавить рецепт"
-        />
-        <flowbite-ui-button
-            @click="$router.push('/category-cooking-recipe')"
-            buttonColor="blue"
-            buttonText="Добавить категорию рецептов"
-        />
-      </div>
 
     </div>
   </div>
 </template>
 
 <script setup>
-import {recipeAddFormSettings} from "~/utils/forms";
+import {recipeIngredientAddFormSettings} from "~/utils/forms";
 import {recipeTableSettings} from "~/utils/tables";
 import {
   itemAlertSettings,
@@ -53,7 +44,9 @@ const router = useRouter();
 
 const kitchenStore = useKitchenStore();
 
+const {data: receiptsCategory} = await useAsyncData('category-cooking-recipe', () => kitchenStore.fetchItems('category-cooking-recipe'));
 const {data: receipts} = await useAsyncData('recipe', () => kitchenStore.fetchItems('recipe-balance'));
+
 const recipeRefresh = () => refreshNuxtData('recipe');
 const searchItems = (search) => {
   console.log(search);
@@ -64,14 +57,28 @@ const showModal = ref(false);
 
 
 const showAlert = ref(false);
-const formSettings = ref(recipeAddFormSettings);
+const formSettings = ref(recipeIngredientAddFormSettings);
 
 const recipe = ref({});
 
+const addRecipeCategorySelect = () => {
+  const categorySelectField = {
+    title: 'Категория рецепта',
+    type: 'text',
+    name: 'category',
+    required: true,
+    method: 'select',
+    selectValue: receiptsCategory.value,
+  }
+  if (!formSettings.value.formFields.find(field => field.name === 'category')) {
+    formSettings.value.formFields.push(categorySelectField)
+  }
+}
 
 const addModalForm = () => {
   recipe.value = {};
   formSettings.value.modalTitle = `Добавить рецепт`;
+  addRecipeCategorySelect();
   formSettings.value.addMode = true;
   showModal.value = true;
 }
@@ -92,7 +99,9 @@ const alertSettings = ref({});
 
 const emitFormData = async (data, action) => {
   if (action === 'addItem') {
-    await kitchenStore.addItem(data, 'recipe');
+    data.products = []
+    const addRecipe = await kitchenStore.addItem(data, 'cooking-recipe');
+    router.push(`/cooking-recipe/${addRecipe.id}`);
     closeModal();
     alerting(itemAlertSettings);
   } else if (action === 'updateItem') {

@@ -12,7 +12,7 @@ class StockBalanceAPIView(APIView):
 
         # Получаем остаток продукта на складе
         product_quantity = ProductInStore.objects.values(
-            'product__name', 'store__name', 'transaction_type'
+            'product__name', 'store__name'
         ).annotate(
             product_quantity=Sum(
                 Case(

@@ -6,22 +6,25 @@
         :alert-settings="alertSettings"
     />
     <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Продукты</h1>
-    <div class="md:flex mb-3">
-      <flowbite-block-dropdownselect
-          :select-text="'Выбрать категорию'"
-          :searchSelect="'product-category'"
-          @changeSelect="changeSelect"
-      />
-    </div>
+<!--    <div class="md:flex mb-3">-->
+<!--      <flowbite-block-dropdownselect-->
+<!--          :select-text="'Выбрать категорию'"-->
+<!--          :searchSelect="'product-category'"-->
+<!--          @changeSelect="changeSelect"-->
+<!--      />-->
+<!--    </div>-->
     <flowbite-block-table
         :columnNames="productTableSettings.columns"
         :columnValues="products"
         :new-button="{color: 'blue', text: 'Добавить категорию'}"
+        :filters="productCategories"
         @modalFormDetail="modalFormDetail"
         @addModalForm="addModalForm"
         @emitFormData="emitFormData"
         @search="searchItems"
         @new-button-click="$router.push('/product-category')"
+        @filter="filter"
+
     />
 
     <div class="flex items-center">
@@ -46,13 +49,17 @@ import {emitFormDataMixin} from "~/mixins/emitFormDataMixin";
 
 const kitchenStore = useKitchenStore();
 
-const router = useRouter();
-
-const {data: products} = await useLazyAsyncData('product', () => kitchenStore.fetchItems('product'));
-const {data: productCategories} = await useLazyAsyncData('product-category', () => kitchenStore.fetchItems('product-category'));
+const {data: productCategories} = await useAsyncData('product-category', () => kitchenStore.fetchItems('product-category'));
+const {data: products} = await useAsyncData('product', () => kitchenStore.fetchItems('product'));
 
 const productsRefresh = () => refreshNuxtData('product')
-const changeSelect = (categoryId) => {
+
+const filter = (categoryId) => {
+  console.log(categoryId)
+  if (!categoryId) {
+    productsRefresh();
+    return;
+  }
   products.value = kitchenStore.getItemsById(categoryId, 'category');
 }
 
@@ -75,7 +82,7 @@ const addProductCategorySelect = () => {
     method: 'select',
     selectValue: productCategories.value,
   }
-  if (formSettings.value.formFields.length === 5) {
+  if (!formSettings.value.formFields.find(field => field.name === 'category')) {
     formSettings.value.formFields.push(categorySelectField)
   }
 }
