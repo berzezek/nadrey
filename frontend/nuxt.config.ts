@@ -9,6 +9,15 @@ export default defineNuxtConfig({
       'defineStore',
     ]
   },
+  app: {
+    head: {
+      title: 'NApp',
+      // favicon: 'https://nuxtjs.org/favicon.ico',
+      link: [
+        // {rel: 'icon', type: 'image/png', href: '.favicon.png'},
+        ],
+    }
+  }
   // app: {
   //   head: {
   //     title: 'NApp',

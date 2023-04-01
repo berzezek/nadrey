@@ -2,11 +2,19 @@
   <form @submit.prevent>
     <div class="relative z-0 w-full mb-6 group" v-for="field in formSettings.formFields" :key="field.name">
       <input
+          v-if="field.method === 'checkbox'"
+          :id="field.name"
+          :type="field.type"
+          v-model="formData[field.name]"
+          :checked="field.name"
+          class="py-2.5 px-0 mt-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+      />
+      <input
+          v-if="field.method === 'input'"
           :type="field.type"
           :name="field.name"
           :id="field.name"
           :step="field.step"
-          v-if="field.method === 'input'"
           v-model="formData[field.name]"
           class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
           :required="field.required"/>
@@ -18,9 +26,9 @@
           class="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
           :required="field.required"/>
       <select
+          v-if="field.method === 'select'"
           :name="field.name"
           :id="field.name"
-          v-if="field.method === 'select'"
           v-model="formData[field.name]"
           class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
           :required="field.required">

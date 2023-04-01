@@ -12,6 +12,7 @@
         :columnValues="productsStock"
         @modalFormDetail="modalFormDetail"
         @addModalForm="addModalForm"
+        @search="searchItems"
     />
 
     <div class="flex items-center">
@@ -31,26 +32,20 @@
 <script setup>
 import {productStockAddFormSettings} from "~/utils/forms";
 import {productStockEditTableSettings} from "~/utils/tables";
-import {
-  itemAlertSettings,
-  itemDeleteAlertSettings,
-  itemEditAlertSettings,
-} from "~/utils/alerts";
 
 import {useKitchenStore} from "~/store/kitchenStore";
 import {emitFormDataMixin} from "~/mixins/emitFormDataMixin";
 
 const kitchenStore = useKitchenStore();
 
+const {data: store} = await useAsyncData('stock', () => kitchenStore.fetchItems('stock'));
+const {data: products} = await useAsyncData('products', () => kitchenStore.fetchItems('product'));
+
 const {data: productsStock} = await useAsyncData('product-stock', () => kitchenStore.fetchItems('product-in-stock'));
 const productsStockRefresh = () => refreshNuxtData('product-stock');
 
-
-const {data: store} = await useAsyncData('stock', () => kitchenStore.fetchItems('stock'));
-const {data: products} = await useAsyncData('products', () => kitchenStore.fetchItems('product'));
-const searchItems = (search) => {
-  console.log(search);
-  // productCategories.value = productCategoryStore.getProductCategoryBySearch(search);
+const searchItems = (searchText) => {
+  productsStock.value = kitchenStore.getItemsBySearch(searchText, 'product_name');
 }
 
 const showModal = ref(false);
@@ -62,7 +57,7 @@ const formSettings = ref(productStockAddFormSettings);
 const productStock = ref({});
 const addFormSelect = () => {
   const productSelectField = {
-    title: 'Продукт',
+    title: 'Продукт *',
     type: 'text',
     name: 'product',
     required: true,
@@ -70,7 +65,7 @@ const addFormSelect = () => {
     selectValue: products.value,
   }
   const stockSelectField = {
-    title: 'Склад',
+    title: 'Склад *',
     type: 'text',
     name: 'store',
     required: true,

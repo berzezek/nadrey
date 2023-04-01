@@ -21,6 +21,7 @@ export const useKitchenStore = defineStore('kitchen', {
       if (search === '') {
         return state.items;
       }
+      console.log(state.items)
       return state.items.filter((item: string) => item[param]?.toLowerCase().includes(search.toLowerCase()));
     }
   },

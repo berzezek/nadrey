@@ -3,10 +3,10 @@ export const productAddFormSettings = {
   buttonText: 'Добавить',
   modalTitle: 'Добавить продукт',
   formFields: [
-    {title: 'Наименование', type: 'text', name: 'name', required: true, method: 'input'},
+    {title: 'Наименование *', type: 'text', name: 'name', required: true, method: 'input'},
     {title: 'Описание', type: 'text', name: 'description', required: false, method: 'textarea'},
     {
-      title: 'Единица измерения', type: 'text', name: 'unit', required: true, method: 'select', selectValue: [
+      title: 'Единица измерения *', type: 'text', name: 'unit', required: true, method: 'select', selectValue: [
         {name: 'кг', id: 'kg'},
         {name: 'гр', id: 'gr'},
         {name: 'л', id: 'l'},
@@ -24,7 +24,7 @@ export const productCategoryAddFormSettings = {
   buttonText: 'Добавить',
   modalTitle: 'Добавить категорию',
   formFields: [
-    {title: 'Наименование', type: 'text', name: 'name', required: true, method: 'input'},
+    {title: 'Наименование *', type: 'text', name: 'name', required: true, method: 'input'},
     {title: 'Описание', type: 'text', name: 'description', required: false, method: 'textarea'},
 
   ],
@@ -35,7 +35,7 @@ export const stockAddFormSettings = {
   buttonText: 'Добавить',
   modalTitle: 'Добавить cклад',
   formFields: [
-    {title: 'Наименование', type: 'text', name: 'name', required: true, method: 'input'},
+    {title: 'Наименование *', type: 'text', name: 'name', required: true, method: 'input'},
     {title: 'Описание', type: 'text', name: 'description', required: false, method: 'textarea'},
 
   ],
@@ -46,7 +46,7 @@ export const productStockAddFormSettings = {
   buttonText: 'Добавить',
   modalTitle: 'Добавить продукт',
   formFields: [
-    {title: 'Количество', type: 'number', name: 'quantity', required: true, method: 'input', step: 1},
+    {title: 'Количество *', type: 'number', name: 'quantity', required: true, method: 'input', step: 1},
     {
       title: 'Закупочная цена',
       type: 'number',
@@ -73,7 +73,7 @@ export const recipeCategoryAddFormSettings = {
   buttonText: 'Добавить',
   modalTitle: 'Добавить рецепт',
   formFields: [
-    {title: 'Наименование', type: 'text', name: 'name', required: true, method: 'input'},
+    {title: 'Наименование *', type: 'text', name: 'name', required: true, method: 'input'},
     {title: 'Описание', type: 'text', name: 'description', required: false, method: 'textarea'},
   ]
 };
@@ -83,7 +83,7 @@ export const recipeIngredientAddFormSettings = {
   buttonText: 'Добавить',
   modalTitle: 'Добавить рецепт',
   formFields: [
-    {title: 'Наименование', type: 'text', name: 'name', required: true, method: 'input'},
+    {title: 'Наименование *', type: 'text', name: 'name', required: true, method: 'input'},
     {title: 'Описание', type: 'text', name: 'description', required: false, method: 'textarea'},
     {title: 'Цена', type: 'number', name: 'price', required: false, method: 'input', step: 100},
     {title: 'Фактический вес', type: 'number', name: 'weight', required: false, method: 'input', step: 0.1},
@@ -95,7 +95,7 @@ export const ingredientsAddFormSettings = {
   buttonText: 'Добавить',
   modalTitle: 'Добавить ингредиент',
   formFields: [
-    {title: 'Количество', type: 'number', name: 'quantity', required: true, method: 'input', step: 0.01},
+    {title: 'Количество *', type: 'number', name: 'quantity', required: true, method: 'input', step: 0.01},
   ]
 };
 
@@ -104,9 +104,9 @@ export const clientAddFormSettings = {
   buttonText: 'Добавить',
   modalTitle: 'Добавить клиента',
   formFields: [
-    {title: 'Имя', type: 'text', name: 'name', required: true, method: 'input'},
+    {title: 'Имя *', type: 'text', name: 'name', required: true, method: 'input'},
     {title: 'Описание', type: 'text', name: 'description', required: false, method: 'textarea'},
-    {title: 'Контакты', type: 'text', name: 'phone', required: true, method: 'input'},
+    {title: 'Контакты *', type: 'text', name: 'phone', required: true, method: 'input'},
     {title: 'Почта', type: 'email', name: 'email', required: false, method: 'input'},
     {title: 'Дата рождения', type: 'date', name: 'birthday', required: false, method: 'input'},
     {title: 'Адрес', type: 'text', name: 'address', required: false, method: 'input'},
@@ -119,7 +119,8 @@ export const orderAddFormSettings = {
   modalTitle: 'Добавить заказ',
   formFields: [
     {title: 'Описание', type: 'text', name: 'description', required: false, method: 'textarea'},
-    {title: 'Количество', type: 'number', name: 'quantity', required: true, method: 'input', step: 0.1},
+    {title: 'Количество *', type: 'number', name: 'quantity', required: true, method: 'input', step: 0.1},
+    {title: 'Готов', type: 'checkbox', name: 'is_completed', required: false, method: 'checkbox'},
   ]
 };
 
@@ -129,6 +130,7 @@ export const cardAddFormSettings = {
   modalTitle: 'Добавить корзину',
   formFields: [
     {title: 'Описание', type: 'text', name: 'description', required: false, method: 'textarea'},
+    {title: 'Оплачен', type: 'checkbox', name: 'is_paid', required: false, method: 'checkbox'},
   ]
 };
 

@@ -6,23 +6,21 @@
         :alert-settings="alertSettings"
     />
     <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Продукты</h1>
-<!--    <div class="md:flex mb-3">-->
-<!--      <flowbite-block-dropdownselect-->
-<!--          :select-text="'Выбрать категорию'"-->
-<!--          :searchSelect="'product-category'"-->
-<!--          @changeSelect="changeSelect"-->
-<!--      />-->
-<!--    </div>-->
+    <!--    <div class="md:flex mb-3">-->
+    <!--      <flowbite-block-dropdownselect-->
+    <!--          :select-text="'Выбрать категорию'"-->
+    <!--          :searchSelect="'product-category'"-->
+    <!--          @changeSelect="changeSelect"-->
+    <!--      />-->
+    <!--    </div>-->
     <flowbite-block-table
         :columnNames="productTableSettings.columns"
         :columnValues="products"
-        :new-button="{color: 'blue', text: 'Добавить категорию'}"
         :filters="productCategories"
         @modalFormDetail="modalFormDetail"
         @addModalForm="addModalForm"
         @emitFormData="emitFormData"
         @search="searchItems"
-        @new-button-click="$router.push('/product-category')"
         @filter="filter"
 
     />
@@ -37,6 +35,20 @@
       />
 
     </div>
+    <flowbite-ui-page-description
+        :descriptions="[
+          {
+            title: 'Здесь можно добавить',
+            link: '/product-category',
+            linkText: 'Категорию продуктов.',
+          },
+          {
+            title: 'Здесь можно добавить',
+            link: '/product-in-stock/edit',
+            linkText: 'Продукты на склад.',
+          },
+        ]"
+    />
   </div>
 </template>
 
@@ -44,7 +56,7 @@
 import {productAddFormSettings} from "~/utils/forms";
 import {productTableSettings} from "~/utils/tables";
 
-import { useKitchenStore } from "~/store/kitchenStore";
+import {useKitchenStore} from "~/store/kitchenStore";
 import {emitFormDataMixin} from "~/mixins/emitFormDataMixin";
 
 const kitchenStore = useKitchenStore();
@@ -53,6 +65,7 @@ const {data: productCategories} = await useAsyncData('product-category', () => k
 const {data: products} = await useAsyncData('product', () => kitchenStore.fetchItems('product'));
 
 const productsRefresh = () => refreshNuxtData('product')
+const productCategoriesRefresh = () => refreshNuxtData('product-category')
 
 const filter = (categoryId) => {
   console.log(categoryId)
@@ -74,8 +87,9 @@ const formSettings = ref(productAddFormSettings);
 const product = ref({});
 
 const addProductCategorySelect = () => {
+  productCategoriesRefresh();
   const categorySelectField = {
-    title: 'Категория',
+    title: 'Категория *',
     type: 'text',
     name: 'category',
     required: true,
@@ -104,8 +118,8 @@ const alerting = (data) => {
   alertSettings.value = data
   showAlert.value = true;
   setTimeout(() => {
-      showAlert.value = false;
-    }, 5000)
+    showAlert.value = false;
+  }, 5000)
 
 }
 
@@ -125,7 +139,6 @@ const modalFormDetail = (id) => {
   addProductCategorySelect();
   showModal.value = true;
 }
-
 
 </script>
 

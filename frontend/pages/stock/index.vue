@@ -24,6 +24,15 @@
           @emitFormData="emitFormData"
       />
     </div>
+    <flowbite-ui-page-description
+        :descriptions="[
+          {
+            title: 'Здесь можно добавить',
+            link: '/product-in-stock/edit',
+            linkText: 'Продукты на склад.',
+          },
+        ]"
+    />
   </div>
 </template>
 

@@ -1,7 +1,9 @@
 export const productTableSettings = {
   columns: [
     {name: 'Наименование'},
-    {calories: 'Калорийность'},
+    {unit_russian: 'Единица измерения'},
+    {category_name: 'Категория'},
+    {calories: 'Калорий на ед.'},
     {description: 'Описание'}
   ]
 }
@@ -26,16 +28,16 @@ export const productStockTableSettings = {
     {product_quantity: 'Количество на складе'},
     {unit: 'Единица измерения'},
     {max_price: 'Максимальная цена'},
-    {average_price: 'Усредненная цена'}
+    {average_price: 'Средняя цена'}
   ]
 }
 
 export const productStockEditTableSettings = {
   columns: [
     {product_name: 'Наименование'},
-    {quantity: 'Количество на складе'},
+    {quantity: 'Количество'},
     {product_unit: 'Единица измерения'},
-    {transaction_type: 'Тип транзакции'},
+    {transaction_type_russian: 'Тип транзакции'},
     {price: 'Цена'},
   ]
 }
@@ -43,7 +45,7 @@ export const productStockEditTableSettings = {
 export const recipeCategoryTableSettings = {
   columns: [
     {name: 'Наименование'},
-    {description: 'Описание'},
+    {description: 'Описание за ед.'},
   ]
 }
 export const recipeTableSettings = {
@@ -53,8 +55,8 @@ export const recipeTableSettings = {
     {name: 'Наименование'},
     {total_product_weight: 'Вес продуктов'},
     {weight: 'Фактический вес'},
-    {total_average_price: 'Средняя цена *'},
-    {total_max_price: 'Максимальная цена *'},
+    {total_average_price: 'Средняя цена  *'},
+    {total_max_price: 'Максимальная цена  *'},
     {price: 'Фактическая цена'},
   ]
 }
@@ -83,15 +85,16 @@ export const clientTableSettings = {
 export const orderTableSettings = {
   columns: [
     {recipe_name: 'Рецепт'},
-    {description: 'Описание'},
     {quantity: 'Количество'},
-    {is_completed: 'Готов'}
+    {is_completed: 'Готов'},
+    {description: 'Описание'}
   ]
 }
 
 export const cardTableSettings = {
   columns: [
     {card_client: 'Клиент'},
+    {date_created: 'Дата создания'},
     {is_paid: 'Оплачен'},
   ]
 }

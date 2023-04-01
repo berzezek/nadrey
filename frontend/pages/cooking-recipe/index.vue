@@ -14,6 +14,7 @@
         @addModalForm="addModalForm"
         @newButtonClick="$router.push('/category-cooking-recipe')"
         @emitFormData="emitFormData"
+        @search="searchItems"
     />
 
     <div class="flex items-center">
@@ -46,15 +47,13 @@ const kitchenStore = useKitchenStore();
 
 const {data: receiptsCategory} = await useAsyncData('category-cooking-recipe', () => kitchenStore.fetchItems('category-cooking-recipe'));
 const {data: receipts} = await useAsyncData('recipe', () => kitchenStore.fetchItems('recipe-balance'));
-
 const recipeRefresh = () => refreshNuxtData('recipe');
-const searchItems = (search) => {
-  console.log(search);
-  // productCategories.value = productCategoryStore.getProductCategoryBySearch(search);
+
+const searchItems = (searchText) => {
+  recipe.value = kitchenStore.getRecipeBySearch(searchText, 'name');
 }
 
 const showModal = ref(false);
-
 
 const showAlert = ref(false);
 const formSettings = ref(recipeIngredientAddFormSettings);
@@ -63,7 +62,7 @@ const recipe = ref({});
 
 const addRecipeCategorySelect = () => {
   const categorySelectField = {
-    title: 'Категория рецепта',
+    title: 'Категория рецепта *',
     type: 'text',
     name: 'category',
     required: true,

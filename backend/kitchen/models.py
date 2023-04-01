@@ -1,6 +1,7 @@
 from django.db import models
 
 
+
 class ProductCategory(models.Model):
     class Meta:
         verbose_name = 'Категорию продукта'
@@ -34,13 +35,6 @@ class Product(models.Model):
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, null=True, blank=True,
                                  verbose_name='Категория')
 
-    # def set_weight(self):
-    #     if self.unit == 'kg':
-    #         return 1
-    #     elif self.unit == 'gr':
-    #         return 0.001
-    #     else:
-    #         return self.weight
 
     def __str__(self):
         return f'{self.name} ({self.unit})'

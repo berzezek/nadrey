@@ -25,12 +25,21 @@
       />
 
     </div>
+    <flowbite-ui-page-description
+        :descriptions="[
+            {
+            title: 'Здесь можно добавить',
+            link: '/product',
+            linkText: 'Продукты.',
+          }
+        ]"
+    />
   </div>
 </template>
 
 <script setup>
-import {productCategoryAddFormSettings } from "~/utils/forms";
-import {productCategoryTableSettings } from "~/utils/tables";
+import {productCategoryAddFormSettings} from "~/utils/forms";
+import {productCategoryTableSettings} from "~/utils/tables";
 import {
   itemAlertSettings,
   itemDeleteAlertSettings,
@@ -41,7 +50,6 @@ import {useKitchenStore} from "~/store/kitchenStore";
 import {emitFormDataMixin} from "~/mixins/emitFormDataMixin";
 
 const kitchenStore = useKitchenStore();
-
 
 const {data: productCategories} = await useAsyncData('product-category', () => kitchenStore.fetchItems('product-category'));
 const productCategoryRefresh = () => refreshNuxtData('product-category')

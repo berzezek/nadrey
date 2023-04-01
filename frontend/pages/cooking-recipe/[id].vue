@@ -2,7 +2,7 @@
   <flowbite-block-hero
       :heroSettings="heroSettings"
   />
-  <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Ингредиенты</h1>
+  <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Добавить ингредиенты к рецепту</h1>
   <div class="mb-3 mx-auto">
     <flowbite-block-table
         :columnNames="recipeIngredientsTableSettings.columns"
@@ -73,7 +73,7 @@ const ingredient = ref({});
 
 const addIngredientSelectField = () => {
   const productSelectField = {
-    title: 'Продукт',
+    title: 'Продукт *',
     type: 'text',
     name: 'product',
     required: true,
@@ -87,8 +87,6 @@ const addIngredientSelectField = () => {
 
 const modalFormDetail = (id) => {
   ingredient.value = ingredients.value.find(item => item.id === id);
-  console.log(ingredient.value)
-  const product = products.value.find(item => item.id === ingredient.value.id);
   formSettings.value.modalTitle = `Редактировать ингредиент`;
   formSettings.value.addMode = false;
   formSettings.value.buttonText = `Редактировать`;

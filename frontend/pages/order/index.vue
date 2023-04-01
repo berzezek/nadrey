@@ -71,7 +71,7 @@ const product = ref({});
 
 const addProductCategorySelect = () => {
   const categorySelectField = {
-    title: 'Категория',
+    title: 'Категория *',
     type: 'text',
     name: 'category',
     required: true,

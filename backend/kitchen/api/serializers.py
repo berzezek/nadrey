@@ -23,9 +23,46 @@ class ProductCategorySerializer(ModelSerializer):
 
 
 class ProductSerializer(ModelSerializer):
+
+    def get_category_name(self, obj):
+        return obj.category.name
+
+    def get_unit_russian(self, obj):
+        # case
+        if obj.unit == 'kg':
+            return 'кг'
+        elif obj.unit == 'gr':
+            return 'гр'
+        elif obj.unit == 'l':
+            return 'л'
+        elif obj.unit == 'ml':
+            return 'мл'
+        elif obj.unit == 'pcs':
+            return 'шт'
+
+    category_name = SerializerMethodField(
+        method_name='get_category_name',
+        read_only=True,
+    )
+
+    unit_russian = SerializerMethodField(
+        method_name='get_unit_russian',
+        read_only=True,
+    )
+
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = (
+            'id',
+            'name',
+            'description',
+            'category_name',
+            'unit',
+            'unit_russian',
+            'category',
+            'weight',
+            'calories',
+        )
 
 
 class StoreSerializer(ModelSerializer):
@@ -35,8 +72,37 @@ class StoreSerializer(ModelSerializer):
 
 
 class ProductInStoreSerializer(ModelSerializer):
+    def get_product_unit_russian(self, obj):
+        # case
+        if obj.product.unit == 'kg':
+            return 'кг'
+        elif obj.product.unit == 'gr':
+            return 'гр'
+        elif obj.product.unit == 'l':
+            return 'л'
+        elif obj.product.unit == 'ml':
+            return 'мл'
+        elif obj.product.unit == 'pcs':
+            return 'шт'
+
+    def get_transaction_type_russian(self, obj):
+        if obj.transaction_type == 'in':
+            return 'Приход'
+        elif obj.transaction_type == 'out':
+            return 'Расход'
+        elif obj.transaction_type == 'write_off':
+            return 'Списание'
+
+
     product_name = CharField(source='product.name', read_only=True)
-    product_unit = CharField(source='product.unit', read_only=True)
+    product_unit = SerializerMethodField(
+        method_name='get_product_unit_russian',
+        read_only=True
+    )
+    transaction_type_russian = SerializerMethodField(
+        method_name='get_transaction_type_russian',
+        read_only=True
+    )
 
     class Meta:
         model = ProductInStore
@@ -47,12 +113,13 @@ class ProductInStoreSerializer(ModelSerializer):
             'product_unit',
             'quantity',
             'transaction_type',
+            'transaction_type_russian',
             'price',
             'expiration_date',
             'description',
             'store',
         )
-        ordering = ['product']
+        ordering = [ 'product' ]
 
 
 class IngredientsSerializer(ModelSerializer):
@@ -94,6 +161,7 @@ class OrderSerializer(ModelSerializer):
             'recipe',
             'recipe_name',
             'quantity',
+            'is_completed',
         )
 
 
@@ -107,6 +175,7 @@ class CardSerializer(ModelSerializer):
         method_name='get_order',
         read_only=True,
     )
+
     # order = OrderSerializer(many=True, read_only=True)
 
     # def get_card_price(self, obj):

@@ -22,13 +22,6 @@
           @closeModal="closeModal"
           @emitFormData="emitFormData"
       />
-      <div class="flex items-between">
-        <flowbite-ui-button
-            @click="addModalForm"
-            buttonColor="blue"
-            buttonText="Добавить категорию рецептов"
-        />
-      </div>
 
     </div>
   </div>
