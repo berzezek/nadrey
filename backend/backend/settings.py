@@ -83,15 +83,24 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'OPTIONS': {
+#             'read_default_file': './my.cnf',
+#         },
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {
-            'read_default_file': './my.cnf',
-        },
+        'NAME': 'cn73530_nadrey',
+        'USER': 'cn73530_nadrey',
+        'PASSWORD': '!Aa20102010',
+        'HOST': 'localhost',
     }
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
