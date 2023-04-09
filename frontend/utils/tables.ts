@@ -50,22 +50,23 @@ export const recipeCategoryTableSettings = {
 }
 export const recipeTableSettings = {
   columns: [
-    {category: 'Категория'},
+    {category_name: 'Категория'},
     // {image: 'Изображение'},
     {name: 'Наименование'},
-    {total_product_weight: 'Вес продуктов'},
+    {total_weight: 'Вес продуктов'},
     {weight: 'Фактический вес'},
-    {total_average_price: 'Средняя цена  *'},
-    {total_max_price: 'Максимальная цена  *'},
+    {total_average_price: 'Средняя цена'},
+    {total_max_price: 'Максимальная цена'},
+    {total_last_price: 'Последняя цена'},
     {price: 'Фактическая цена'},
   ]
 }
 export const recipeIngredientsTableSettings = {
   columns: [
-    {name: 'Наименование'},
+    {product_name: 'Наименование'},
     {quantity: 'Количество'},
-    {unit: 'Ед'},
-    {unit_weight: 'Вес продукта'},
+    {product_unit: 'Ед'},
+    {ingredient_weight: 'Вес продукта'},
     {max_price: 'Максимальная цена'},
     {average_price: 'Средняя цена'},
   ]

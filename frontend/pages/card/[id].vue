@@ -30,17 +30,19 @@ const kitchenStore = useKitchenStore()
 const router = useRouter()
 const id = router.currentRoute.value.params.id
 
-const {data: orders} = await useAsyncData('order', () =>
-    kitchenStore.fetchItems('order')
-)
 const {data: card} = await useAsyncData('card', () =>
     kitchenStore.getItemById(id, 'card')
+)
+const {data: orders} = await useAsyncData('order', () =>
+    kitchenStore.fetchItems('order')
 )
 const {data: recipes} = await useAsyncData('cooking-recipe', () =>
     kitchenStore.fetchItems('cooking-recipe')
 )
 
 const cardRefresh = () => refreshNuxtData('card')
+const orderRefresh = () => refreshNuxtData('order')
+const recipeRefresh = () => refreshNuxtData('cooking-recipe')
 
 const isPaid = () => {
   return card.value.is_paid ? 'Оплачено' : 'Не оплачено'
@@ -64,9 +66,7 @@ const heroSettings = {
 }
 
 const showModal = ref(false)
-
 const formSettings = ref(orderAddFormSettings)
-
 const order = ref({})
 
 const addRecipeSelectField = () => {
@@ -99,8 +99,10 @@ const addModalForm = () => {
   addRecipeSelectField()
   showModal.value = true
 }
-//
 const closeModal = () => {
+  cardRefresh()
+  orderRefresh()
+  recipeRefresh()
   showModal.value = false
 }
 
@@ -109,18 +111,14 @@ const emitFormData = async (data, action) => {
     const res = await kitchenStore.addItem(data, 'order')
     const cardData = await kitchenStore.getItemById(id, 'card')
     cardData.order.push(res.id)
-    console.log(cardData)
     await kitchenStore.updateItem(cardData, id, 'card')
-    cardRefresh()
-    showModal.value = false
+    closeModal();
   } else if (action === 'updateItem') {
     await kitchenStore.updateItem(data, data.id, 'order')
-    cardRefresh()
-    showModal.value = false
+    closeModal();
   } else if (action === 'deleteItem') {
     await kitchenStore.deleteItem(data, 'order')
-    cardRefresh()
-    showModal.value = false
+    closeModal();
   }
 }
 </script>

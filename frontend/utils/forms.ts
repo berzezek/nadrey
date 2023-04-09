@@ -22,11 +22,11 @@ export const productAddFormSettings = {
 export const productCategoryAddFormSettings = {
   formAction: 'addItem',
   buttonText: 'Добавить',
+  addMode: true,
   modalTitle: 'Добавить категорию',
   formFields: [
     {title: 'Наименование *', type: 'text', name: 'name', required: true, method: 'input'},
     {title: 'Описание', type: 'text', name: 'description', required: false, method: 'textarea'},
-
   ],
 };
 

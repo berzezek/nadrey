@@ -1,24 +1,22 @@
 <template>
   <div class="">
+
     <flowbite-block-alert
         v-if="showAlert"
         @closeAlert="closeAlert"
         :alert-settings="alertSettings"
     />
+
     <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Продукты</h1>
-    <!--    <div class="md:flex mb-3">-->
-    <!--      <flowbite-block-dropdownselect-->
-    <!--          :select-text="'Выбрать категорию'"-->
-    <!--          :searchSelect="'product-category'"-->
-    <!--          @changeSelect="changeSelect"-->
-    <!--      />-->
-    <!--    </div>-->
+
     <flowbite-block-table
         :columnNames="productTableSettings.columns"
         :columnValues="products"
         :filters="productCategories"
+        :new-button="{text: 'Добавить категорию', color: 'blue'}"
         @modalFormDetail="modalFormDetail"
         @addModalForm="addModalForm"
+        @newButtonClick="$router.push('/product-category')"
         @emitFormData="emitFormData"
         @search="searchItems"
         @filter="filter"
@@ -33,22 +31,7 @@
           @closeModal="closeModal"
           @emitFormData="emitFormData"
       />
-
     </div>
-    <flowbite-ui-page-description
-        :descriptions="[
-          {
-            title: 'Здесь можно добавить',
-            link: '/product-category',
-            linkText: 'Категорию продуктов.',
-          },
-          {
-            title: 'Здесь можно добавить',
-            link: '/product-in-stock/edit',
-            linkText: 'Продукты на склад.',
-          },
-        ]"
-    />
   </div>
 </template>
 
@@ -109,8 +92,9 @@ const addModalForm = () => {
   showModal.value = true;
 }
 const closeModal = () => {
-  showModal.value = false;
   productsRefresh();
+  productCategoriesRefresh();
+  showModal.value = false;
 }
 
 const alertSettings = ref({});

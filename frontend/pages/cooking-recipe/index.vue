@@ -47,6 +47,8 @@ const kitchenStore = useKitchenStore();
 
 const {data: receiptsCategory} = await useAsyncData('category-cooking-recipe', () => kitchenStore.fetchItems('category-cooking-recipe'));
 const {data: receipts} = await useAsyncData('recipe', () => kitchenStore.fetchItems('recipe-balance'));
+
+const recipeCategoryRefresh = () => refreshNuxtData('category-cooking-recipe');
 const recipeRefresh = () => refreshNuxtData('recipe');
 
 const searchItems = (searchText) => {
@@ -82,8 +84,9 @@ const addModalForm = () => {
   showModal.value = true;
 }
 const closeModal = () => {
-  showModal.value = false;
   recipeRefresh();
+  recipeCategoryRefresh();
+  showModal.value = false;
 }
 
 const alerting = (data) => {

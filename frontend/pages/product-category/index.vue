@@ -9,8 +9,10 @@
     <flowbite-block-table
         :columnNames="productCategoryTableSettings.columns"
         :columnValues="productCategories"
+        :new-button="{text: 'Добавить продукты', color: 'blue'}"
         @modalFormDetail="modalFormDetail"
         @addModalForm="addModalForm"
+        @newButtonClick="$router.push('/product')"
         @emitFormData="emitFormData"
         @search="searchItems"
     />
@@ -23,29 +25,13 @@
           @closeModal="closeModal"
           @emitFormData="emitFormData"
       />
-
     </div>
-    <flowbite-ui-page-description
-        :descriptions="[
-            {
-            title: 'Здесь можно добавить',
-            link: '/product',
-            linkText: 'Продукты.',
-          }
-        ]"
-    />
   </div>
 </template>
 
 <script setup>
 import {productCategoryAddFormSettings} from "~/utils/forms";
 import {productCategoryTableSettings} from "~/utils/tables";
-import {
-  itemAlertSettings,
-  itemDeleteAlertSettings,
-  itemEditAlertSettings,
-} from "~/utils/alerts";
-
 import {useKitchenStore} from "~/store/kitchenStore";
 import {emitFormDataMixin} from "~/mixins/emitFormDataMixin";
 
@@ -56,7 +42,6 @@ const productCategoryRefresh = () => refreshNuxtData('product-category')
 const searchItems = (search) => {
   productCategories.value = kitchenStore.getItemsBySearch(search, 'name');
 }
-
 
 const showModal = ref(false);
 const showAlert = ref(false);

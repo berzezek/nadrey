@@ -17,16 +17,10 @@ export default defineNuxtConfig({
         // {rel: 'icon', type: 'image/png', href: '.favicon.png'},
         ],
     }
+  },
+  runtimeConfig: {
+    public: {
+      baseApiUrl: 'http://localhost:8000/api/v1/'
+    }
   }
-  // app: {
-  //   head: {
-  //     title: 'NApp',
-  //     link: [
-  //       {rel: 'stylesheet', href: 'https://unpkg.com/flowbite-datepicker/dist/flowbite-datepicker.css'},
-  //     ],
-  //     script: [
-  //       {src: 'https://unpkg.com/flowbite-datepicker/dist/flowbite-datepicker.js', body: true},
-  //     ]
-  //   }
-  // }
 })

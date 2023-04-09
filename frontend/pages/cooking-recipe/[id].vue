@@ -33,10 +33,13 @@ const kitchenStore = useKitchenStore();
 const router = useRouter();
 const id = router.currentRoute.value.params.id;
 
-const {data: recipe} = await useAsyncData('recipe', () => kitchenStore.fetchItems(`recipe-balance?id=${id}`));
-const recipeRefresh = () => refreshNuxtData('recipe');
+const {data: recipe} = await useAsyncData('recipe', () => kitchenStore.fetchItems(`recipe-balance/${id}`));
 const {data: products} = await useAsyncData('products', () => kitchenStore.fetchItems('product'));
 const {data: ingredients} = await useAsyncData('ingredients', () => kitchenStore.fetchItems('ingredients'));
+
+const recipeRefresh = () => refreshNuxtData('recipe');
+const productRefresh = () => refreshNuxtData('products');
+const ingredientRefresh = () => refreshNuxtData('ingredients');
 
 const searchItems = async (searchText) => {
   if (!searchText) {
@@ -56,11 +59,11 @@ const heroSettings = ref({
     color: 'primary',
   },
   options: [
-    { title: "Категория", value: recipe.value.category },
-    { title: "Цена", value: recipe.value.price ? recipe.value.price : 'Не указана' },
+    { title: "Категория", value: recipe.value.category_name },
+    { title: "Утвержденная цена", value: recipe.value.price ? recipe.value.price : 'Не указана' },
     { title: "Средняя цена", value: recipe.value.total_average_price },
     { title: "Максимальная цена", value: recipe.value.total_max_price },
-    { title: "Общий вес продуктов", value: recipe.value.total_product_weight },
+    { title: "Общий вес продуктов", value: `${recipe.value.total_weight} кг` },
     { title: "Рецепт", value: recipe.value.description ? recipe.value.description : 'В строжайшем секрете' },
   ],
 })
@@ -80,7 +83,7 @@ const addIngredientSelectField = () => {
     method: 'select',
     selectValue: products.value,
   }
-  if (!formSettings.value.formFields.some(field => field.title === 'Продукт')) {
+  if (!formSettings.value.formFields.some(field => field.title === 'Продукт *')) {
     formSettings.value.formFields.unshift(productSelectField)
   }
 }
@@ -103,6 +106,9 @@ const addModalForm = () => {
 }
 
 const closeModal = () => {
+  recipeRefresh();
+  productRefresh();
+  ingredientRefresh();
   showModal.value = false;
 }
 
@@ -113,12 +119,13 @@ const emitFormData = async (data, action) => {
     recipeData.products.push(res.id);
     delete recipeData.image;
     await kitchenStore.updateItem(recipeData, id, 'cooking-recipe');
-    recipeRefresh();
-    showModal.value = false;
+    closeModal();
   } else if (action === 'updateItem') {
     await kitchenStore.updateItem(data, data.id, 'ingredients');
-    recipeRefresh();
-    showModal.value = false;
+    closeModal();
+  } else if (action === 'deleteItem') {
+    await kitchenStore.deleteItem(id, 'ingredients');
+    closeModal();
   }
 }
 </script>

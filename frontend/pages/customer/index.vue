@@ -55,8 +55,8 @@ const addModalForm = () => {
   showModal.value = true;
 }
 const closeModal = () => {
-  showModal.value = false;
   clientRefresh();
+  showModal.value = false;
 }
 
 const alerting = (data) => {

@@ -29,6 +29,7 @@ router.register('cooking-recipe', RecipeViewSet)
 router.register('client', ClientViewSet)
 router.register('order', OrderViewSet)
 router.register('card', CardViewSet)
+router.register('recipe-balance', RecipeAPIView)
 # router.register('grouped-product-in-stock', GroupedProductInStoreViewSet)
 
 urlpatterns = [
@@ -36,7 +37,7 @@ urlpatterns = [
     re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('stock-balance/', StockBalanceAPIView.as_view(), name='stock_balance'),
-    path('recipe-balance/', RecipeAPIView.as_view(), name='recipe_balance'),
+    # path('recipe-balance/', RecipeAPIView.as_view(), name='recipe_balance'),
 ]
 
 urlpatterns += router.urls

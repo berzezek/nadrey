@@ -1,7 +1,7 @@
 import {defineStore} from 'pinia'
-import {BASE_API_URL} from '~/utils/constants'
 
-// const BASE_API_URL = process.env.BASE_API_URL || 'http://localhost:8000/api/v1/'
+// const BASE_API_URL = 'http://nadrey.tw1.su/api/v1/'
+const BASE_API_URL = 'http://localhost:8000/api/v1/'
 
 export const useKitchenStore = defineStore('kitchen', {
   state: () => ({
@@ -21,7 +21,6 @@ export const useKitchenStore = defineStore('kitchen', {
       if (search === '') {
         return state.items;
       }
-      console.log(state.items)
       return state.items.filter((item: string) => item[param]?.toLowerCase().includes(search.toLowerCase()));
     }
   },
@@ -29,7 +28,7 @@ export const useKitchenStore = defineStore('kitchen', {
     async fetchItems(url: string) {
       this.isFetching = true
       try {
-        const response = await fetch(`${BASE_API_URL}${url}`)
+        const response = await fetch(`${BASE_API_URL}${url}/`)
         this.items = await response.json();
         return this.items
       } catch (error) {
