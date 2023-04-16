@@ -44,9 +44,13 @@ const cardRefresh = () => refreshNuxtData('card')
 const orderRefresh = () => refreshNuxtData('order')
 const recipeRefresh = () => refreshNuxtData('cooking-recipe')
 
-const isPaid = () => {
-  return card.value.is_paid ? 'Оплачено' : 'Не оплачено'
-}
+const isPaid = computed(() => {
+  if (card.value.is_paid) {
+    return 'Оплачено'
+  } else {
+    return 'Не оплачено'
+  }
+})
 
 const searchItems = (searchText) => {
   recipes.value = kitchenStore.getItemsBySearch(searchText, 'name')
@@ -54,15 +58,26 @@ const searchItems = (searchText) => {
 
 const heroSettings = {
   title: `Корзина № ${card.value.id}`,
-  subtitle: `${card.value.card_client} - от ${
-      card.value.date_created
-  }: ${isPaid()}`,
+  subtitle: `${card.value.card_client} - от ${card.value.date_created}: ${isPaid}`,
 
   button: {
     text: 'Изменить',
     link: '#',
     color: 'primary',
   },
+  options: [{
+    title: 'Клиент',
+    value: card.value.card_client
+  }, {
+    title: 'Сумма заказа',
+    value: computed(() => card.value.total_price)
+  }, {
+    title: 'Дата создания',
+    value: new Date(card.value.date_created).toLocaleString()
+  }, {
+    title: 'Оплачено',
+    value: isPaid
+  }],
 }
 
 const showModal = ref(false)

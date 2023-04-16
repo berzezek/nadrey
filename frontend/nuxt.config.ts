@@ -20,7 +20,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      baseApiUrl: 'http://localhost:8000/api/v1/'
+      apiBase: "http://nadrey.tw1.su/api/v1/",
+      localeApiBase: "http://localhost:8000/api/v1/",
     }
   }
 })

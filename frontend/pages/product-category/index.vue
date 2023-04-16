@@ -56,8 +56,8 @@ const addModalForm = () => {
   showModal.value = true;
 }
 const closeModal = () => {
-  showModal.value = false;
   productCategoryRefresh();
+  showModal.value = false;
 }
 
 const alerting = (data) => {

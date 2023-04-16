@@ -107,11 +107,11 @@ const emitFormData = async (data, action) => {
     closeModal();
     alerting(itemAlertSettings);
   } else if (action === 'updateItem') {
-    // await productStockStore.updateProductCategory(data);
+    await kitchenStore.updateItem(data, 'cooking-recipe');
     closeModal();
     alerting(itemEditAlertSettings);
   } else if (action === 'deleteItem') {
-    // await productStockStore.deleteProductCategory(data);
+    await kitchenStore.deleteItem(data, 'cooking-recipe');
     closeModal();
     alerting(itemDeleteAlertSettings);
   }

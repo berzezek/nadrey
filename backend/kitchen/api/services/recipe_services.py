@@ -21,7 +21,7 @@ def get_ingredients_weight(ingredients):
             total_weight += ingredient['ingredient_weight']
         except ProductInStore.DoesNotExist:
             pass
-    return round(total_weight)
+    return round(total_weight, 2)
 
 
 class RecipeAPIView(ModelViewSet):
@@ -38,7 +38,7 @@ class RecipeAPIView(ModelViewSet):
             recipe['total_weight'] = get_ingredients_weight(recipe['products'])
         return Response(serializer.data)
 
-    def retrieve(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         data = serializer.data

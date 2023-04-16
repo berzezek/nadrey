@@ -16,6 +16,7 @@ export const productAddFormSettings = {
     },
     {title: 'Вес', type: 'number', name: 'weight', required: false, method: 'input', step: 0.01},
     {title: 'Калории', type: 'number', name: 'calories', required: false, method: 'input', step: 50},
+    {title: 'Категория *', type: 'text', name: 'category', required: true, method: 'select', selectValue: []},
   ],
 }
 
@@ -65,6 +66,22 @@ export const productStockAddFormSettings = {
         {name: 'Списание по дате', id: 'data_off'},
       ]
     },
+    {
+      title: 'Продукт *',
+      type: 'text',
+      name: 'product',
+      required: true,
+      method: 'select',
+      selectValue: [],
+    },
+    {
+      title: 'Склад *',
+      type: 'text',
+      name: 'store',
+      required: true,
+      method: 'select',
+      selectValue: [],
+    }
   ]
 };
 
@@ -93,9 +110,9 @@ export const recipeIngredientAddFormSettings = {
 export const ingredientsAddFormSettings = {
   formAction: 'addItem',
   buttonText: 'Добавить',
-  modalTitle: 'Добавить ингредиент',
   formFields: [
     {title: 'Количество *', type: 'number', name: 'quantity', required: true, method: 'input', step: 0.01},
+    {title: 'Продукт *', type: 'text', name: 'product', required: true, method: 'select', selectValue: []}
   ]
 };
 

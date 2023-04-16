@@ -217,6 +217,13 @@ class OrderSerializer(ModelSerializer):
 
 
 class CardSerializer(ModelSerializer):
+
+    def get_total_price(self, obj):
+        orders = Order.objects.filter(card=obj.id)
+        total_price = 0
+        for order in orders:
+            total_price += order.recipe.price * order.quantity
+        return total_price
     def get_order(self, obj):
         orders = Order.objects.filter(card=obj.id)
         return OrderSerializer(orders, many=True).data
@@ -226,6 +233,7 @@ class CardSerializer(ModelSerializer):
         method_name='get_order',
         read_only=True,
     )
+    total_price = SerializerMethodField(read_only=True)
 
     class Meta:
         model = Card
@@ -237,4 +245,5 @@ class CardSerializer(ModelSerializer):
             'get_orders',
             'is_paid',
             'date_created',
+            'total_price',
         )

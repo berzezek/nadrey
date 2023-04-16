@@ -11,6 +11,7 @@
     "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/tailwindcss": "^6.4.1",
     "@types/dotenv": "^8.2.0",
+    "@types/node": "^18.15.11",
     "nuxt": "^3.2.2"
   },
   "dependencies": {

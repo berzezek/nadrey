@@ -2,7 +2,7 @@
   <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Заказы</h1>
   <flowbite-block-table
       :columnNames="cardTableSettings.columns"
-      :columnValues="cards"
+      :columnValues="cardsData"
       @addModalForm="addModalForm"
       @modalFormDetail="modalFormDetail"
       @emitFormData="emitFormData"
@@ -26,9 +26,18 @@ import {useKitchenStore} from "~/store/kitchenStore";
 
 const router = useRouter();
 const kitchenStore = useKitchenStore();
+
 const {data: clients} = await useLazyAsyncData('client', () => kitchenStore.fetchItems('client'));
 const {data: cards} = await useAsyncData('cards', () => kitchenStore.fetchItems('card'));
 const cardsRefresh = () => refreshNuxtData('cards')
+const clientsRefresh = () => refreshNuxtData('client')
+
+const cardsData = computed(() => {
+  return cards.value.map(card => {
+    card.date_created = new Date(card.date_created).toLocaleString('ru-RU')
+    return card;
+  })
+})
 
 const showModal = ref(false);
 const showAlert = ref(false);
@@ -37,8 +46,9 @@ const formSettings = ref(cardAddFormSettings);
 const card = ref({});
 
 const closeModal = () => {
-  showModal.value = false;
   cardsRefresh();
+  clientsRefresh();
+  showModal.value = false;
 }
 
 const alertSettings = ref({});

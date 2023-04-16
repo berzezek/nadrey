@@ -37,6 +37,8 @@ urlpatterns = [
     re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('stock-balance/', StockBalanceAPIView.as_view(), name='stock_balance'),
+    # path('recipe-balance/', RecipeAPIView.as_view({'get': 'list'}), name='recipe_balance'),
+    # path('recipe-balance/<int:pk>/', RecipeAPIView.as_view({'get': 'list'}), name='recipe_balance')
     # path('recipe-balance/', RecipeAPIView.as_view(), name='recipe_balance'),
 ]
 

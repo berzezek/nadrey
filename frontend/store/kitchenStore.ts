@@ -1,7 +1,7 @@
 import {defineStore} from 'pinia'
 
-// const BASE_API_URL = 'http://nadrey.tw1.su/api/v1/'
-const BASE_API_URL = 'http://localhost:8000/api/v1/'
+const BASE_API_URL = 'http://nadrey.tw1.su/api/v1/';
+console.log(BASE_API_URL)
 
 export const useKitchenStore = defineStore('kitchen', {
   state: () => ({

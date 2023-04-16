@@ -72,12 +72,11 @@ const addFormSelect = () => {
     method: 'select',
     selectValue: store.value,
   }
-  if (!formSettings.value.formFields.some(field => field.title === 'Склад')) {
-    formSettings.value.formFields.unshift(stockSelectField)
-  }
-  if (!formSettings.value.formFields.some(field => field.title === 'Продукт')) {
-    formSettings.value.formFields.unshift(productSelectField)
-  }
+  formSettings.value.formFields.splice(formSettings.value.formFields.findIndex(
+      field => field.name === 'product'), 1, productSelectField)
+  formSettings.value.formFields.splice(formSettings.value.formFields.findIndex(
+      field => field.name === 'store'), 1, stockSelectField)
+
 }
 
 const addModalForm = () => {

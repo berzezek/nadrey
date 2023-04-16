@@ -6,7 +6,7 @@
   <div class="mb-3 mx-auto">
     <flowbite-block-table
         :columnNames="recipeIngredientsTableSettings.columns"
-        :columnValues="recipe.products"
+        :columnValues="ingredientsForRecipe"
         @modalFormDetail="modalFormDetail"
         @addModalForm="addModalForm"
         @search="searchItems"
@@ -33,13 +33,18 @@ const kitchenStore = useKitchenStore();
 const router = useRouter();
 const id = router.currentRoute.value.params.id;
 
-const {data: recipe} = await useAsyncData('recipe', () => kitchenStore.fetchItems(`recipe-balance/${id}`));
+const {data: recipe} = await useAsyncData('recipe', () => kitchenStore.fetchItems(`cooking-recipe/${id}`));
 const {data: products} = await useAsyncData('products', () => kitchenStore.fetchItems('product'));
 const {data: ingredients} = await useAsyncData('ingredients', () => kitchenStore.fetchItems('ingredients'));
-
 const recipeRefresh = () => refreshNuxtData('recipe');
 const productRefresh = () => refreshNuxtData('products');
 const ingredientRefresh = () => refreshNuxtData('ingredients');
+
+const ingredientsForRecipe = computed(() => recipe.value.products);
+const maxPrice = computed(() => ingredientsForRecipe.value.reduce((acc, item) => acc + item.max_price, 0));
+const averagePrice = computed(() => ingredientsForRecipe.value.reduce((acc, item) => acc + item.average_price, 0));
+const lastPrice = computed(() => ingredientsForRecipe.value.reduce((acc, item) => acc + item.last_price, 0));
+const totalWeight = computed(() => ingredientsForRecipe.value.reduce((acc, item) => acc + item.ingredient_weight, 0));
 
 const searchItems = async (searchText) => {
   if (!searchText) {
@@ -48,6 +53,7 @@ const searchItems = async (searchText) => {
     recipe.value.products = recipe.value.products.filter(item => item.name.toLowerCase().includes(searchText.toLowerCase()))
   }
 }
+
 
 const heroSettings = ref({
   title: recipe.value.name,
@@ -59,12 +65,13 @@ const heroSettings = ref({
     color: 'primary',
   },
   options: [
-    { title: "Категория", value: recipe.value.category_name },
-    { title: "Утвержденная цена", value: recipe.value.price ? recipe.value.price : 'Не указана' },
-    { title: "Средняя цена", value: recipe.value.total_average_price },
-    { title: "Максимальная цена", value: recipe.value.total_max_price },
-    { title: "Общий вес продуктов", value: `${recipe.value.total_weight} кг` },
-    { title: "Рецепт", value: recipe.value.description ? recipe.value.description : 'В строжайшем секрете' },
+    {title: "Категория", value: recipe.value.category_name},
+    {title: "Утвержденная цена", value: recipe.value.price ? recipe.value.price : 'Не указана'},
+    {title: "Средняя цена", value: averagePrice.value},
+    {title: "Максимальная цена", value: maxPrice.value},
+    {title: "Последняя цена", value: lastPrice.value},
+    {title: "Общий вес продуктов", value: totalWeight.value},
+    {title: "Рецепт", value: recipe.value.description ? recipe.value.description : 'В строжайшем секрете'},
   ],
 })
 
@@ -83,14 +90,13 @@ const addIngredientSelectField = () => {
     method: 'select',
     selectValue: products.value,
   }
-  if (!formSettings.value.formFields.some(field => field.title === 'Продукт *')) {
-    formSettings.value.formFields.unshift(productSelectField)
-  }
+  formSettings.value.formFields.splice(formSettings.value.formFields.findIndex(field => field.name === 'product'), 1, productSelectField)
+
 }
 
 const modalFormDetail = (id) => {
   ingredient.value = ingredients.value.find(item => item.id === id);
-  formSettings.value.modalTitle = `Редактировать ингредиент`;
+  formSettings.value.modalTitle = `Редактировать ингредиент рецепта`
   formSettings.value.addMode = false;
   formSettings.value.buttonText = `Редактировать`;
   addIngredientSelectField();
@@ -99,7 +105,7 @@ const modalFormDetail = (id) => {
 
 const addModalForm = () => {
   ingredient.value = {};
-  formSettings.value.modalTitle = 'Добавить ингредиент';
+  formSettings.value.modalTitle = `Добавить ингредиент к рецепту`
   formSettings.value.addMode = true;
   addIngredientSelectField();
   showModal.value = true;

@@ -79,9 +79,8 @@ const addProductCategorySelect = () => {
     method: 'select',
     selectValue: productCategories.value,
   }
-  if (!formSettings.value.formFields.find(field => field.name === 'category')) {
-    formSettings.value.formFields.push(categorySelectField)
-  }
+  formSettings.value.formFields.splice(formSettings.value.formFields.findIndex(
+      field => field.name === 'category'), 1, categorySelectField)
 }
 
 const addModalForm = () => {

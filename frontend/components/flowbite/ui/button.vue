@@ -24,7 +24,7 @@ const props = defineProps({
   },
 })
 const buttonClass = ref('')
-buttonClass.value = `ml-3 text-white
+buttonClass.value = `text-white
 bg-${props.buttonColor}-700
 hover:bg-${props.buttonColor}-800 focus:ring-4 focus:outline-none
 focus:ring-${props.buttonColor}-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2 text-center
