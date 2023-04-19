@@ -5,7 +5,7 @@
         @closeAlert="closeAlert"
         :alert-settings="alertSettings"
     />
-    <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Категория продуктов</h1>
+    <h1 class="text-xl text-blue-800 text-center mb-4">Категория продуктов</h1>
     <flowbite-block-table
         :columnNames="productCategoryTableSettings.columns"
         :columnValues="productCategories"

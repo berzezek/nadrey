@@ -1,7 +1,7 @@
 <template>
   <flowbite-block-header/>
 <!--  <flowbite-block-aside/>-->
-  <div class="lg:p-12 md:p-2">
+  <div class="lg:p-12 md:p-2 main">
     <slot/>
 <!--    <div class="container flex justify-end">-->
 <!--      <flowbite-ui-button-->
@@ -25,6 +25,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+body {
+  background-image: url('public/food.png');
+}
 
 </style>

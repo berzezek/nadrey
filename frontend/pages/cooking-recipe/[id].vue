@@ -2,7 +2,7 @@
   <flowbite-block-hero
       :heroSettings="heroSettings"
   />
-  <h1 class="text-xl text-gray-900 dark:text-white text-center mb-4">Добавить ингредиенты к рецепту</h1>
+  <h1 class="text-xl text-blue-800 text-center mb-4">Добавить ингредиенты к рецепту</h1>
   <div class="mb-3 mx-auto">
     <flowbite-block-table
         :columnNames="recipeIngredientsTableSettings.columns"
