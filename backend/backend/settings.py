@@ -65,7 +65,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR.parent.parent / 'frontend'],
+        'DIRS': ['/home/c/cn73530/nadrey/public_html'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
